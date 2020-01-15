@@ -7,8 +7,8 @@
 
 package frc.robot;
 
-import frc.lib.utils.Factory.SparkMaxConfig;
-import frc.lib.utils.Factory.PidControllerConfig;
+import frc.lib.utils.PunkSparkMax.SparkMaxConfig;
+import frc.lib.utils.PunkPidController.PidControllerConfig;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
