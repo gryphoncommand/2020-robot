@@ -21,7 +21,7 @@ import frc.lib.utils.PunkPidController.PidControllerConfig;
  * wherever the constants are needed, to reduce verbosity.
  */
 public final class Constants {
-	public static SparkMaxConfig kDriveMotorConfig = new SparkMaxConfig();
+	public static final SparkMaxConfig kDriveMotorConfig = new SparkMaxConfig();
 	static {
 		kDriveMotorConfig.OPEN_LOOP_RAMP_RATE = 0.0;
 		kDriveMotorConfig.CLOSED_LOOP_RAMP_RATE = 0.0;
