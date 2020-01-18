@@ -3,6 +3,10 @@ plugins {
     id "edu.wpi.first.GradleRIO" version "2020.1.2"
 }
 
+repositories {
+  maven { url 'https://jitpack.io' }
+}
+
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
@@ -53,6 +57,7 @@ dependencies {
     nativeDesktopZip wpi.deps.vendor.jni(wpi.platforms.desktop)
 
     testImplementation 'junit:junit:4.12'
+	implementation "com.github.Oblarg.Oblog:lib:3.1.0"
 
     // Enable simulation gui support. Must check the box in vscode to enable support
     // upon debugging

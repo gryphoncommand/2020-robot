@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.commands.CurvatureDrive;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -31,6 +31,12 @@ public class RobotContainer {
 	// Controllers
 	public static Joystick joystick = new Joystick(0);
 
+	private RunCommand curvatureDrive = new RunCommand(
+		() -> drivetrain.curvatureDrive(joystick.getRawAxis(1), joystick.getRawAxis(2), false), drivetrain);
+	private RunCommand tankDrive = new RunCommand(
+		() -> drivetrain.tankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
+	
+
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
@@ -38,6 +44,7 @@ public class RobotContainer {
 		// Configure the button bindings
 		configureButtonBindings();
 		configureDefaultCommands();
+
 	}
 
 	/**
@@ -51,7 +58,7 @@ public class RobotContainer {
 	}
 
 	private void configureDefaultCommands() {
-		drivetrain.setDefaultCommand(new CurvatureDrive());
+		drivetrain.setDefaultCommand(tankDrive);
 	}
 
 	/**

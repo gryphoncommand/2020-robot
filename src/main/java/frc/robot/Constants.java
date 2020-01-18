@@ -9,6 +9,7 @@ package frc.robot;
 
 import frc.lib.utils.PunkSparkMax.SparkMaxConfig;
 import frc.lib.utils.PunkPidController.PidControllerConfig;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -25,5 +26,20 @@ public final class Constants {
 	static {
 		kDriveMotorConfig.OPEN_LOOP_RAMP_RATE = 0.0;
 		kDriveMotorConfig.CLOSED_LOOP_RAMP_RATE = 0.0;
+		kDriveMotorConfig.IDLE_MODE = IdleMode.kBrake;
+		kDriveMotorConfig.INVERTED = false;
 	}
+	public static final class Joystick {
+        public static final int kLeftXAxis = 0;
+        public static final int kLeftYAxis = 1;
+        public static final int kRightXAxis = 2;
+        public static final int kRightYAxis = 3;   
+    }
+
+    public static final class Drivetrain {
+        public static final int kmLeftFront = 1;
+        public static final int kmLeftBack = 2;
+        public static final int kmRightFront = 3;
+        public static final int kmRightBack = 4;
+    }
 }
