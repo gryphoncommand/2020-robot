@@ -26,7 +26,7 @@ public final class Constants {
 	static {
 		kDriveMotorConfig.OPEN_LOOP_RAMP_RATE = 0.0;
 		kDriveMotorConfig.CLOSED_LOOP_RAMP_RATE = 0.0;
-		kDriveMotorConfig.IDLE_MODE = IdleMode.kBrake;
+		kDriveMotorConfig.IDLE_MODE = IdleMode.kCoast;
 		kDriveMotorConfig.INVERTED = false;
 	}
 	public static final class Joystick {
@@ -42,4 +42,5 @@ public final class Constants {
         public static final int kmRightFront = 3;
         public static final int kmRightBack = 4;
     }
+    public static int[] kGearShift = {0, 1};
 }

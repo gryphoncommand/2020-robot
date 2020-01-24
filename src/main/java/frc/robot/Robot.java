@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import io.github.oblarg.oblog.Logger;
+import edu.wpi.first.wpilibj.Compressor;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -22,6 +23,7 @@ public class Robot extends TimedRobot {
 	private Command m_autonomousCommand;
 
 	private RobotContainer m_robotContainer;
+	private Compressor m_compressor;
 
 	/**
 	 * This function is run when the robot is first started up and should be used
@@ -33,9 +35,10 @@ public class Robot extends TimedRobot {
 		// and put our
 		// autonomous chooser on the dashboard.
 		m_robotContainer = new RobotContainer();
+		m_compressor = new Compressor();
 		Logger.configureLoggingAndConfig(this, false);
 	}
-
+	
 	/**
 	 * This function is called every robot packet, no matter the mode. Use this for
 	 * items like diagnostics that you want ran during disabled, autonomous,
@@ -99,6 +102,7 @@ public class Robot extends TimedRobot {
 		if (m_autonomousCommand != null) {
 			m_autonomousCommand.cancel();
 		}
+		m_compressor.start();
 	}
 
 	/**
