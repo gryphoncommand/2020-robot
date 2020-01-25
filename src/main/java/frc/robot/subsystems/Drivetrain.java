@@ -5,6 +5,9 @@ import frc.lib.utils.PunkSparkMax;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
+
+import edu.wpi.first.wpilibj.Spark;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -17,8 +20,8 @@ public class Drivetrain extends SubsystemBase {
 	private CANSparkMax m_rightFront;
 	private CANSparkMax m_rightBack;
 
-	private SpeedControllerGroup m_left;
-	private SpeedControllerGroup m_right;
+	//private SpeedControllerGroup m_left;
+	//private SpeedControllerGroup m_right;
 	
 	private DoubleSolenoid m_gearShift;	
 
@@ -42,27 +45,38 @@ public class Drivetrain extends SubsystemBase {
 		m_rightFront = new CANSparkMax(3, MotorType.kBrushless);
 		m_rightBack = new CANSparkMax(4, MotorType.kBrushless);
 
+		m_leftFront.restoreFactoryDefaults();
+    	m_leftBack.restoreFactoryDefaults();
+		m_leftFront.setIdleMode(IdleMode.kCoast);
+		m_leftBack.setIdleMode(IdleMode.kCoast);
+		m_rightFront.setIdleMode(IdleMode.kCoast);
+		m_rightBack.setIdleMode(IdleMode.kCoast);
+
 		m_gearShift = new DoubleSolenoid(Constants.kGearShift[0], Constants.kGearShift[1]);
 
 		m_rightFront.setInverted(true);
 		m_rightBack.setInverted(true);
 
-		m_left = new SpeedControllerGroup(m_leftFront, m_leftBack);
-		m_right = new SpeedControllerGroup(m_rightFront, m_rightBack);
+		//m_left = new SpeedControllerGroup(m_leftFront, m_leftBack);
+		//m_right = new SpeedControllerGroup(m_rightFront, m_rightBack);
 
-		m_drive = new DifferentialDrive(m_left, m_right);
+		//m_drive = new DifferentialDrive(m_left, m_right);
 	}
 
 	public void curvatureDrive(double xSpeed, double zRotation, boolean isQuickTurn) {
-		m_drive.curvatureDrive(xSpeed, zRotation, isQuickTurn);
+		//m_drive.curvatureDrive(xSpeed, zRotation, isQuickTurn);
 	}
 
 	public void tankDrive(double lSpeed, double rSpeed) {
 		// m_drive.tankDrive(lSpeed, rSpeed);
+		double fac = 0.25;
+		lSpeed = fac * lSpeed;
+		rSpeed = fac * rSpeed;
 		m_leftFront.set(lSpeed);
 		m_leftBack.set(lSpeed);
-		m_rightFront.set(rSpeed);
-		m_rightBack.set(rSpeed);
+		m_rightFront.set(rSpeed);	
+		m_rightBack.set(rSpeed);	
+
 	}
 
 	public void shiftGears(Value value) {

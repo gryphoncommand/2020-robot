@@ -37,8 +37,8 @@ public final class Constants {
     }
 
     public static final class Drivetrain {
-        public static final int kmLeftFront = 1;
-        public static final int kmLeftBack = 2;
+        public static final int kmLeftFront = 5;
+        public static final int kmLeftBack = 6;
         public static final int kmRightFront = 3;
         public static final int kmRightBack = 4;
     }
