@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.controller.PIDController;
 
-public class Drivetrain extends SubsystemBase {
+public class ComplexDrivetrain extends SubsystemBase {
 	private CANSparkMax m_leftFront; 
 	private CANSparkMax m_leftBack;
 	private CANSparkMax m_rightFront;
@@ -34,7 +34,7 @@ public class Drivetrain extends SubsystemBase {
 
 	private DifferentialDrive m_drive;
 
-	public Drivetrain() {
+	public ComplexDrivetrain() {
 		m_leftFront = new CANSparkMax(1, MotorType.kBrushless);
 		m_leftBack = new CANSparkMax(2, MotorType.kBrushless);
 		m_rightFront = new CANSparkMax(3, MotorType.kBrushless);
