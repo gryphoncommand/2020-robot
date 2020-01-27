@@ -18,6 +18,9 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.SPI;
+import com.kauailabs.navx.frc.AHRS;
+
 
 public class ComplexDrivetrain extends SubsystemBase {
 	private CANSparkMax m_leftFront; 
@@ -27,6 +30,7 @@ public class ComplexDrivetrain extends SubsystemBase {
 
 	private Encoder m_leftEncoder;
 	private Encoder m_rightEncoder;
+	private AHRS m_navx;
 
 	private PigeonIMU m_gyro;
 
@@ -62,6 +66,7 @@ public class ComplexDrivetrain extends SubsystemBase {
 		m_rightEncoder.setDistancePerPulse(2 * Math.PI * 0.1524 / 8192);
 		m_leftEncoder.reset();
 		m_rightEncoder.reset();	
+		m_navx = new AHRS(SPI.Port.kMXP);
 
 		m_gyro = new PigeonIMU(0);
 		m_gearShift = new DoubleSolenoid(Constants.kGearShift[0], Constants.kGearShift[1]);
@@ -74,10 +79,13 @@ public class ComplexDrivetrain extends SubsystemBase {
 
 	// Need to calibrate and see Pigeon orientation.
 	public Rotation2d getAngle() {
-		double head = m_gyro.getFusedHeading();
+		double head = (double) m_navx.getYaw();
 		return Rotation2d.fromDegrees(head);
 	}
-
+	//Lexi was here and theres nothing you can do about it :)
+	/**
+	 *  "It's OK, Lexi." - Tyler Duckworth
+	 */	
 	public void tankDrive(double lSpeed, double rSpeed) {
 		double fac = 0.25;
 		lSpeed = fac * lSpeed;
@@ -89,11 +97,17 @@ public class ComplexDrivetrain extends SubsystemBase {
 
 	}
 
-	public void pidTest(DifferentialDriveWheelSpeeds _speeds) {
-		final double leftOutput = m_leftPIDController.calculate(
-			m_leftEncoder.getRate(), _speeds.leftMetersPerSecond);
-		final double rightOutput =  m_rightPIDController.calculate(
-			m_rightEncoder.getRate(), _speeds.rightMetersPerSecond);
+	// public void pidTest(DifferentialDriveWheelSpeeds _speeds) {
+	// 	final double leftOutput = m_leftPIDController.calculate(
+	// 		m_leftEncoder.getRate(), _speeds.leftMetersPerSecond);
+	// 	final double rightOutput =  m_rightPIDController.calculate(
+	// 		m_rightEncoder.getRate(), _speeds.rightMetersPerSecond);
+	// 	m_leftFront.setVoltage(leftOutput);
+	// 	m_rightFront.setVoltage(rightOutput);
+	// }
+	public void pidTest(double lSpeed, double rSpeed) {
+		final double leftOutput = m_leftPIDController.calculate(m_leftEncoder.getRate(), lSpeed);
+		final double rightOutput =  m_rightPIDController.calculate(m_rightEncoder.getRate(), rSpeed);
 		m_leftFront.setVoltage(leftOutput);
 		m_rightFront.setVoltage(rightOutput);
 	}
@@ -101,7 +115,7 @@ public class ComplexDrivetrain extends SubsystemBase {
 	public void drive(double xSpeed, double rot) {
 		updateOdometry();
 		var wheelSpeeds = m_kinematics.toWheelSpeeds(new ChassisSpeeds(xSpeed, 0.0, rot));
-		pidTest(wheelSpeeds);
+		//pidTest(wheelSpeeds);
 	}
 
 	public void shiftGears(Value value) {

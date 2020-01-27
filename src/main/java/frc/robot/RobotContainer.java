@@ -15,6 +15,7 @@ import frc.robot.subsystems.ComplexDrivetrain;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj.SlewRateLimiter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -32,13 +33,17 @@ public class RobotContainer {
 	// Commands
 
 	// Controllers
+	private final SlewRateLimiter m_speedLimiter = new SlewRateLimiter(3);
 	public static Joystick joystick = new Joystick(0);
 
 	private RunCommand tankDrive = new RunCommand(
 		() -> drivetrain.tankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
 	
 	private RunCommand pidTankDrive = new RunCommand(
-		() -> test_drivetrain.drive(joystick.getRawAxis(1), joystick.getRawAxis(4)), test_drivetrain);
+		() -> test_drivetrain.pidTest(
+			m_speedLimiter.calculate(joystick.getRawAxis(1)) * 3.0, 
+			m_speedLimiter.calculate(joystick.getRawAxis(5)) * 3.0),
+			test_drivetrain);
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
