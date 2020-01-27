@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ShiftGears;
+import frc.robot.subsystems.ComplexDrivetrain;
 import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -27,17 +28,17 @@ public class RobotContainer {
 
 	// Subsystems
 	public static Drivetrain drivetrain = new Drivetrain();
-
+	public static ComplexDrivetrain test_drivetrain = new ComplexDrivetrain();
 	// Commands
 
 	// Controllers
 	public static Joystick joystick = new Joystick(0);
 
-	private RunCommand curvatureDrive = new RunCommand(
-		() -> drivetrain.curvatureDrive(joystick.getRawAxis(1), joystick.getRawAxis(2), false), drivetrain);
 	private RunCommand tankDrive = new RunCommand(
 		() -> drivetrain.tankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
 	
+	private RunCommand pidTankDrive = new RunCommand(
+		() -> test_drivetrain.drive(joystick.getRawAxis(1), joystick.getRawAxis(4)), test_drivetrain);
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -60,6 +61,7 @@ public class RobotContainer {
 
 	private void configureDefaultCommands() {
 		drivetrain.setDefaultCommand(tankDrive);
+		test_drivetrain.setDefaultCommand(pidTankDrive);
 	}
 
 	/**
