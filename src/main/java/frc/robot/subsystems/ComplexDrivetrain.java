@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import frc.robot.Constants;
+import io.github.oblarg.oblog.annotations.Log;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.SPI;
 import com.kauailabs.navx.frc.AHRS;
 
@@ -43,6 +45,7 @@ public class ComplexDrivetrain extends SubsystemBase {
 		new DifferentialDriveKinematics(0.645668); // Fill with track width (in meters)
 	private final DifferentialDriveOdometry m_odometry;
 
+
 	public ComplexDrivetrain() {
 		m_leftFront = new CANSparkMax(1, MotorType.kBrushless);
 		m_leftBack = new CANSparkMax(2, MotorType.kBrushless);
@@ -66,6 +69,7 @@ public class ComplexDrivetrain extends SubsystemBase {
 		m_rightEncoder.setDistancePerPulse(2 * Math.PI * 0.1524 / 8192);
 		m_leftEncoder.reset();
 		m_rightEncoder.reset();	
+		
 		m_navx = new AHRS(SPI.Port.kMXP);
 
 		m_gyro = new PigeonIMU(0);
@@ -75,12 +79,27 @@ public class ComplexDrivetrain extends SubsystemBase {
 		m_rightBack.setInverted(true);
 
 		m_odometry = new DifferentialDriveOdometry(getAngle());
+		SmartDashboard.putData("Left PID", m_leftPIDController);
+		SmartDashboard.putData("Right PID", m_rightPIDController);
 	}
 
 	// Need to calibrate and see Pigeon orientation.
 	public Rotation2d getAngle() {
 		double head = (double) m_navx.getYaw();
 		return Rotation2d.fromDegrees(head);
+	}
+	public double getLeftDistance() {
+		return m_leftEncoder.getDistance();
+	}
+	public double getRightDistance() {
+		return m_rightEncoder.getDistance();
+	}
+	public double getDistance() {
+		return (getLeftDistance() + getRightDistance()) / 2;
+	}
+	public void reset() {
+		m_leftEncoder.reset();
+		m_rightEncoder.reset();
 	}
 	//Lexi was here and theres nothing you can do about it :)
 	/**
@@ -106,10 +125,13 @@ public class ComplexDrivetrain extends SubsystemBase {
 	// 	m_rightFront.setVoltage(rightOutput);
 	// }
 	public void pidTest(double lSpeed, double rSpeed) {
+		
 		final double leftOutput = m_leftPIDController.calculate(m_leftEncoder.getRate(), lSpeed);
 		final double rightOutput =  m_rightPIDController.calculate(m_rightEncoder.getRate(), rSpeed);
-		m_leftFront.setVoltage(leftOutput);
-		m_rightFront.setVoltage(rightOutput);
+		m_leftFront.set(leftOutput * 0.5);
+		m_rightFront.set(rightOutput * 0.5);
+		SmartDashboard.putNumber("left_out", leftOutput);
+		SmartDashboard.putNumber("right_out", rightOutput);
 	}
 
 	public void drive(double xSpeed, double rot) {
