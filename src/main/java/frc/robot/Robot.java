@@ -12,6 +12,9 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.Joystick;
+import frc.robot.Shooter;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the TimedRobot
@@ -24,6 +27,9 @@ public class Robot extends TimedRobot {
 
 	private RobotContainer m_robotContainer;
 	private Compressor m_compressor;
+	private Shooter m_shooter;
+	private final Joystick m_stick = new Joystick(0);
+
 
 	/**
 	 * This function is run when the robot is first started up and should be used
@@ -110,6 +116,22 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		boolean goPower = m_stick.getRawButton(5); // Left bumper
+		boolean lowPower = m_stick.getRawButton(6); // Right bumper
+		boolean midPower = m_stick.getRawButton(7); // Left trigger
+		boolean highPower = m_stick.getRawButton(8); // Right trigger
+
+		if (goPower) {
+			m_shooter.shoot(1);
+		} else if (lowPower) {
+			m_shooter.shoot(2);
+		} else if (midPower) {
+			m_shooter.shoot(3);
+		} else if (highPower) {
+			m_shooter.shoot(4);
+		} else {
+			m_shooter.shoot(5);
+		}
 	}
 
 	@Override
