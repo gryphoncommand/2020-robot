@@ -9,37 +9,46 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drivetrain;;
+import frc.robot.subsystems.ComplexDrivetrain;;
 
 public class ShiftGears extends CommandBase {
-  private final Drivetrain drive;
-  private boolean defaultValue;
-  public ShiftGears(Drivetrain _drive) {
-    // Use requires() here to declare subsystem dependencies
-    // eg. requires(chassis);
-    drive = _drive;
-    defaultValue = false;
-    addRequirements(drive);
-  }
+	private final ComplexDrivetrain drive;
+	private boolean defaultValue;
 
-  @Override
-  public void initialize() {
-    drive.shiftGears(Value.kOff);
-  }
+	/**
+	 * Shifts the gears of the robot. This will probably be refined down to an
+	 * inline command.
+	 */
+	public ShiftGears(ComplexDrivetrain _drive) {
+		drive = _drive;
+		defaultValue = false;
+		addRequirements(drive);
+	}
 
-  // Called repeatedly when this Command is scheduled to run
-  @Override
-  public void execute() {
-    if(defaultValue) {
-        drive.shiftGears(Value.kForward);
-    } else drive.shiftGears(Value.kReverse);
+	/**
+	 * Defaults the gear-shifter.
+	 */
+	@Override
+	public void initialize() {
+		drive.shiftGears(Value.kOff);
+	}
 
-    defaultValue = !defaultValue;
-  }
+	/**
+	 * Periodic function. Toggles the value of the gear-shifter.
+	 */
+	@Override
+	public void execute() {
+		if (defaultValue) {
+			drive.shiftGears(Value.kForward);
+		} else
+			drive.shiftGears(Value.kReverse);
 
-  // Make this return true when this Command no longer needs to run execute()
-  @Override
-  public boolean isFinished() {
-    return true;
-  }
+		defaultValue = !defaultValue;
+	}
+
+	// Make this return true when this Command no longer needs to run execute()
+	@Override
+	public boolean isFinished() {
+		return true;
+	}
 }

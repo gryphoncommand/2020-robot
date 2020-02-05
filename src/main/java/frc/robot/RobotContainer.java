@@ -12,10 +12,10 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ShiftGears;
 import frc.robot.subsystems.ComplexDrivetrain;
-import frc.robot.subsystems.Drivetrain;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.SlewRateLimiter;
+import frc.robot.subsystems.Shooter;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -28,26 +28,34 @@ public class RobotContainer {
 	// The robot's subsystems and commands are defined here...
 
 	// Subsystems
-	public static Drivetrain drivetrain = new Drivetrain();
-	public static ComplexDrivetrain test_drivetrain = new ComplexDrivetrain();
+	public static ComplexDrivetrain drivetrain = new ComplexDrivetrain();
+	// public static Shooter shooter = new Shooter();
 	// Commands
 
 	// Controllers
-	private final SlewRateLimiter m_speedLimiter = new SlewRateLimiter(3);
+	private final SlewRateLimiter m_speedLimiter = new SlewRateLimiter(10);
 	public static Joystick joystick = new Joystick(0);
 
-	private RunCommand tankDrive = new RunCommand(
-		() -> drivetrain.tankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
+
+	/*
+	 * private RunCommand pidTankDrive = new RunCommand( () ->
+	 * test_drivetrain.pidTestSpeed( joystick.getRawAxis(1),
+	 * joystick.getRawAxis(5)), test_drivetrain); //
+	 * m_speedLimiter.calculate(joystick.getRawAxis(1)) * 3.0, //
+	 * m_speedLimiter.calculate(joystick.getRawAxis(5)) * 3.0),
+	 */
+	private RunCommand pidTankDrive = new RunCommand( () ->
+	drivetrain.pidTankDrive(
+		joystick.getRawAxis(1),
+		joystick.getRawAxis(5)), drivetrain); //
 	
-	private RunCommand pidTankDrive = new RunCommand(
-		() -> test_drivetrain.pidTest(
-			m_speedLimiter.calculate(joystick.getRawAxis(1)) * 3.0, 
-			m_speedLimiter.calculate(joystick.getRawAxis(5)) * 3.0),
-			test_drivetrain);
+	private RunCommand curvatureDrive = new RunCommand(
+			() -> drivetrain.curvatureDrive(joystick.getRawAxis(1), joystick.getRawAxis(2)), drivetrain);
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
+
 	public RobotContainer() {
 		// Configure the button bindings
 		configureButtonBindings();
@@ -61,12 +69,22 @@ public class RobotContainer {
 	 * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
 	 */
 	private void configureButtonBindings() {
-		new JoystickButton(joystick, 4).whenPressed(new ShiftGears(drivetrain));
+		// new JoystickButton(joystick, 4).whenPressed(new ShiftGears(test_drivetrain));
+		
+		// new JoystickButton(joystick, 5).whenPressed(new RunCommand(() ->
+		// shooter.shoot(1), shooter));
+		// new JoystickButton(joystick, 5).whenPressed(new RunCommand(() ->
+		// shooter.test_shoot(), shooter));
+		// new JoystickButton(joystick, 6).whenPressed(new RunCommand(() ->
+		// shooter.shoot(2), shooter));
+		// new JoystickButton(joystick, 7).whenPressed(new RunCommand(() ->
+		// shooter.shoot(3), shooter));
+		// new JoystickButton(joystick, 8).whenPressed(new RunCommand(() ->
+		// shooter.shoot(4), shooter));
 	}
 
 	private void configureDefaultCommands() {
-		drivetrain.setDefaultCommand(tankDrive);
-		test_drivetrain.setDefaultCommand(pidTankDrive);
+		drivetrain.setDefaultCommand(pidTankDrive);
 	}
 
 	/**

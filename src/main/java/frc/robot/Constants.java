@@ -40,7 +40,10 @@ public final class Constants {
         public static final int kmLeftFront = 5;
         public static final int kmLeftBack = 6;
         public static final int kmRightFront = 3;
-        public static final int kmRightBack = 4;
+		public static final int kmRightBack = 4;
+		public static final double kTrackWidth = 0.645668;
+		public static final double kTankInputFactor = 0.25;
+		public static final double kDistancePerPulse = 1.86e-5;
     }
-    public static int[] kGearShift = {0, 1};
+	public static int[] kGearShift = {0, 1};
 }
