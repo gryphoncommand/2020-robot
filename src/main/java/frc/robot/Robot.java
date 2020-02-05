@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.Compressor;
  * creating this project, you must also update the build.gradle file in the
  * project.
  */
+@SuppressWarnings({"PMD.SingularField"})
 public class Robot extends TimedRobot {
 	private Command m_autonomousCommand;
 

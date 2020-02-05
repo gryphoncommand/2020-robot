@@ -11,9 +11,12 @@ public class PunkSparkMax extends CANSparkMax {
 		public boolean INVERTED;
 	}
 
+	public String name;
+
 	public PunkSparkMax(int deviceId, SparkMaxConfig config) {
 		super(deviceId, MotorType.kBrushless);
 		setConfig(config);
+		name = "Spark Max #" + deviceId;
 	}
 
 	public PunkSparkMax(int deviceId, SparkMaxConfig config, CANSparkMax leader) {

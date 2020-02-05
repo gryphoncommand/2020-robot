@@ -170,7 +170,6 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	
 	public Rotation2d getAngle() {
 		m_gyro.getYawPitchRoll(heading);
-		SmartDashboard.putNumber("Yaw", heading[0]);
 		return Rotation2d.fromDegrees(heading[0]);
 	}
 	/**

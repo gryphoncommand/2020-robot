@@ -8,7 +8,7 @@
 package frc.robot;
 
 import frc.lib.utils.PunkSparkMax.SparkMaxConfig;
-import frc.lib.utils.PunkPidController.PidControllerConfig;
+import frc.lib.utils.PunkPIDController.PidControllerConfig;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 /**
