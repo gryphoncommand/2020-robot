@@ -18,23 +18,26 @@ public class PunkSparkMax extends CANSparkMax {
 	}
 
 	public String name; // Specific name of device
+	private SparkMaxConfig config;
 
-	public PunkSparkMax(int deviceId, SparkMaxConfig config) {
+	public PunkSparkMax(int deviceId, SparkMaxConfig _config) {
 		super(deviceId, MotorType.kBrushless);
-		setConfig(config);
+		config = _config;
 		name = "Spark Max #" + deviceId;
+
+		setConfig();
 		restoreFactoryDefaults();
 	}
 
-	public PunkSparkMax(int deviceId, SparkMaxConfig config, CANSparkMax leader) {
-		this(deviceId, config);
+	public PunkSparkMax(int deviceId, SparkMaxConfig _config, CANSparkMax leader) {
+		this(deviceId, _config);
 		follow(leader);
 	}
 
 	/**
 	 * Set the configuration parameters to the given constants.
 	 */
-	public void setConfig(SparkMaxConfig config) {
+	private void setConfig() {
 		super.setOpenLoopRampRate(config.OPEN_LOOP_RAMP_RATE);
 		super.setClosedLoopRampRate(config.CLOSED_LOOP_RAMP_RATE);
 		super.setIdleMode(config.IDLE_MODE);

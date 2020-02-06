@@ -174,7 +174,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	/**
 	 * Updates the odometry object with the latest sensor data.
 	 */
-	public void updateOdometry() {
+	private void updateOdometry() {
 		m_odometry.update(getAngle(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
 	}
 
