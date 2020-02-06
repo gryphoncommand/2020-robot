@@ -7,12 +7,14 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.lib.utils.PunkSparkMax;
+
 import io.github.oblarg.oblog.annotations.Log;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,10 +40,8 @@ public class Shooter extends SubsystemBase {
 	 */
 	public Shooter() {
 		m_encoder = new Encoder(6, 7, 8);
-		m_shooter = new CANSparkMax(5, MotorType.kBrushless);
-		m_shooter.restoreFactoryDefaults();
-		m_shooter.setIdleMode(IdleMode.kCoast);
-
+		m_shooter = new PunkSparkMax(5, Constants.Shooter.kConfig);
+		
 		kP = 0.03;
 		kI = 0;
 		kD = 0;

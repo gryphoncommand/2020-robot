@@ -1,9 +1,15 @@
 package frc.lib.utils;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkMax.IdleMode;
 
+/**
+ * Wrapper class to handle the overhead for the PID Controller that the CAN
+ * SPARK MAX uses.
+ */
 public class PunkSparkMax extends CANSparkMax {
+	/**
+	 * Data type for SparkMax configs.
+	 */
 	public static class SparkMaxConfig {
 		public double OPEN_LOOP_RAMP_RATE;
 		public double CLOSED_LOOP_RAMP_RATE;
@@ -11,20 +17,23 @@ public class PunkSparkMax extends CANSparkMax {
 		public boolean INVERTED;
 	}
 
-	public String name;
+	public String name; // Specific name of device
 
 	public PunkSparkMax(int deviceId, SparkMaxConfig config) {
 		super(deviceId, MotorType.kBrushless);
 		setConfig(config);
 		name = "Spark Max #" + deviceId;
+		restoreFactoryDefaults();
 	}
 
 	public PunkSparkMax(int deviceId, SparkMaxConfig config, CANSparkMax leader) {
-		super(deviceId, MotorType.kBrushless);
-		setConfig(config);
+		this(deviceId, config);
 		follow(leader);
 	}
 
+	/**
+	 * Set the configuration parameters to the given constants.
+	 */
 	public void setConfig(SparkMaxConfig config) {
 		super.setOpenLoopRampRate(config.OPEN_LOOP_RAMP_RATE);
 		super.setClosedLoopRampRate(config.CLOSED_LOOP_RAMP_RATE);

@@ -8,7 +8,6 @@
 package frc.robot;
 
 import frc.lib.utils.PunkSparkMax.SparkMaxConfig;
-import frc.lib.utils.PunkPIDController.PidControllerConfig;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 /**
@@ -29,21 +28,43 @@ public final class Constants {
 		kDriveMotorConfig.IDLE_MODE = IdleMode.kCoast;
 		kDriveMotorConfig.INVERTED = false;
 	}
-	public static final class Joystick {
-        public static final int kLeftXAxis = 0;
-        public static final int kLeftYAxis = 1;
-        public static final int kRightXAxis = 2;
-        public static final int kRightYAxis = 3;   
-    }
 
-    public static final class Drivetrain {
-        public static final int kmLeftFront = 5;
-        public static final int kmLeftBack = 6;
-        public static final int kmRightFront = 3;
+	public static final class Joystick {
+		public static final int kLeftXAxis = 0;
+		public static final int kLeftYAxis = 1;
+		public static final int kRightXAxis = 2;
+		public static final int kRightYAxis = 3;
+	}
+
+	public static final class Drivetrain {
+		public static final int kmLeftFront = 1;
+		public static final int kmLeftBack = 2;
+		public static final int kmRightFront = 3;
 		public static final int kmRightBack = 4;
+
 		public static final double kTrackWidth = 0.645668;
 		public static final double kTankInputFactor = 0.25;
 		public static final double kDistancePerPulse = 1.86e-5;
-    }
-	public static int[] kGearShift = {0, 1};
+
+		public static final SparkMaxConfig kConfig = new SparkMaxConfig();
+		static {
+			kDriveMotorConfig.OPEN_LOOP_RAMP_RATE = 0.0;
+			kDriveMotorConfig.CLOSED_LOOP_RAMP_RATE = 0.0;
+			kDriveMotorConfig.IDLE_MODE = IdleMode.kCoast;
+			kDriveMotorConfig.INVERTED = false;
+		}
+	}
+
+	public static final class Shooter {
+		public static final int kmShooter = 5;
+		public static final SparkMaxConfig kConfig = new SparkMaxConfig();
+		static {
+			kConfig.OPEN_LOOP_RAMP_RATE = 0.0;
+			kConfig.CLOSED_LOOP_RAMP_RATE = 0.0;
+			kConfig.IDLE_MODE = IdleMode.kCoast;
+			kConfig.INVERTED = false;
+		}
+	}
+
+	public static int[] kGearShift = { 0, 1 };
 }

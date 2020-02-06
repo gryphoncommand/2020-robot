@@ -25,39 +25,25 @@ import frc.robot.subsystems.Shooter;
  * commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-	// The robot's subsystems and commands are defined here...
-
 	// Subsystems
 	public static ComplexDrivetrain drivetrain = new ComplexDrivetrain();
 	// public static Shooter shooter = new Shooter();
+
 	// Commands
+	private RunCommand pidTankDrive = new RunCommand(
+			() -> drivetrain.pidTankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
+	private RunCommand curvatureDrive = new RunCommand(
+			() -> drivetrain.curvatureDrive(joystick.getRawAxis(1), joystick.getRawAxis(2)), drivetrain);
 
 	// Controllers
 	private final SlewRateLimiter m_speedLimiter = new SlewRateLimiter(10);
 	public static Joystick joystick = new Joystick(0);
-
-
-	/*
-	 * private RunCommand pidTankDrive = new RunCommand( () ->
-	 * test_drivetrain.pidTestSpeed( joystick.getRawAxis(1),
-	 * joystick.getRawAxis(5)), test_drivetrain); //
-	 * m_speedLimiter.calculate(joystick.getRawAxis(1)) * 3.0, //
-	 * m_speedLimiter.calculate(joystick.getRawAxis(5)) * 3.0),
-	 */
-	private RunCommand pidTankDrive = new RunCommand( () ->
-	drivetrain.pidTankDrive(
-		joystick.getRawAxis(1),
-		joystick.getRawAxis(5)), drivetrain); //
-	
-	private RunCommand curvatureDrive = new RunCommand(
-			() -> drivetrain.curvatureDrive(joystick.getRawAxis(1), joystick.getRawAxis(2)), drivetrain);
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
 
 	public RobotContainer() {
-		// Configure the button bindings
 		configureButtonBindings();
 		configureDefaultCommands();
 	}
@@ -70,7 +56,7 @@ public class RobotContainer {
 	 */
 	private void configureButtonBindings() {
 		// new JoystickButton(joystick, 4).whenPressed(new ShiftGears(test_drivetrain));
-		
+
 		// new JoystickButton(joystick, 5).whenPressed(new RunCommand(() ->
 		// shooter.shoot(1), shooter));
 		// new JoystickButton(joystick, 5).whenPressed(new RunCommand(() ->
