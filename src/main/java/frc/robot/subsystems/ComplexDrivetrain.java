@@ -2,17 +2,19 @@ package frc.robot.subsystems;
 
 import frc.lib.utils.PunkSparkMax;
 import frc.robot.Constants;
+import frc.lib.utils.PunkPIDController;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
 import com.revrobotics.AlternateEncoderType;
 import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
 
 import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
@@ -22,6 +24,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.revrobotics.ControlType;
 
 @SuppressWarnings("PMD.ExcessiveImports")
 public class ComplexDrivetrain extends SubsystemBase implements Loggable {
@@ -34,26 +37,26 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	private final DifferentialDriveOdometry m_odometry;
 
 	private final PIDController m_leftPIDController, m_rightPIDController;
+	private CANPIDController m_leftPID, m_rightPID;
 
 	private DoubleSolenoid m_gearShift;
 
-	private Encoder m_leftEncoder;
-
-	private Encoder m_rightEncoder;
-	private CANEncoder m_testEncoder;
+	private CANEncoder m_leftEncoder, m_rightEncoder;
 
 	private PigeonIMU m_gyro;
 
 	private double[] heading;
+	@Log
+	private double velocity, highest_velocity, lowest_velocity;
 
 	/**
 	 * Central class for all drivetrain-related activities.
 	 */
 	public ComplexDrivetrain() {
-		m_leftFront = new PunkSparkMax(Constants.Drivetrain.kmLeftFront, Constants.Drivetrain.kConfig);
-		m_leftBack = new PunkSparkMax(Constants.Drivetrain.kmLeftBack, Constants.Drivetrain.kConfig, m_leftFront);
-		m_rightFront = new PunkSparkMax(Constants.Drivetrain.kmRightFront, Constants.Drivetrain.kConfig);
-		m_rightBack = new PunkSparkMax(Constants.Drivetrain.kmRightBack, Constants.Drivetrain.kConfig, m_rightFront);
+		m_leftFront = new PunkSparkMax(Constants.Drivetrain.kmLeftFront, Constants.kDriveMotorConfig);
+		m_leftBack = new PunkSparkMax(Constants.Drivetrain.kmLeftBack, Constants.kDriveMotorConfig, m_leftFront);
+		m_rightFront = new PunkSparkMax(Constants.Drivetrain.kmRightFront, Constants.kDriveMotorConfig);
+		m_rightBack = new PunkSparkMax(Constants.Drivetrain.kmRightBack, Constants.kDriveMotorConfig, m_rightFront);
 
 		m_left = new SpeedControllerGroup(m_leftFront, m_leftBack);
 		m_right = new SpeedControllerGroup(m_rightFront, m_rightBack);
@@ -69,22 +72,31 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 		m_rightPIDController = new PIDController(1, 0, 0);
 
 		m_gearShift = new DoubleSolenoid(Constants.kGearShift[0], Constants.kGearShift[1]);
-		m_leftEncoder = new Encoder(0, 1, 2);
-		m_rightEncoder = new Encoder(3, 4, 5);
+		m_leftEncoder = m_leftFront.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
+		m_rightEncoder = m_rightFront.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
+		m_leftPID = m_leftFront.getPIDController();
+		m_rightPID = m_rightFront.getPIDController();
 
-		m_testEncoder = m_leftFront.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
-		SmartDashboard.putNumber("Drivetrain - Test Encoder", m_testEncoder.getPosition());
+		// TEST Constructor - Not sure if this works.
+		// m_leftPID = new PunkPIDController(m_leftFront, Constants.Drivetrain.kPIDConfig, true);
+		// m_rightPID = new PunkPIDController(m_rightFront, Constants.Drivetrain.kPIDConfig, true);
 
-		m_leftEncoder.setDistancePerPulse(2 * Math.PI * Constants.Drivetrain.kDistancePerPulse);
-		m_rightEncoder.setDistancePerPulse(2 * Math.PI * Constants.Drivetrain.kDistancePerPulse);
-		m_leftEncoder.reset();
-		m_rightEncoder.reset();
+		m_leftPID.setP(0.1);
+		m_leftPID.setI(1e-4);
+		m_leftPID.setD(1);
+		m_leftPID.setIZone(0);
+		m_leftPID.setFF(0);
+		m_leftPID.setOutputRange(-1, 1);
+		m_rightPID.setP(0.1);
+		m_rightPID.setI(1e-4);
+		m_rightPID.setD(1);
+		m_rightPID.setIZone(0);
+		m_rightPID.setFF(0);
+		m_rightPID.setOutputRange(-1, 1);
 		m_gyro.configFactoryDefault();
 
 		SmartDashboard.putData("Drivetrain - Left PID", m_leftPIDController);
 		SmartDashboard.putData("Drivetrain - Right PID", m_rightPIDController);
-		SmartDashboard.putData("Drivetrain - Left Encoder", m_leftEncoder);
-		SmartDashboard.putData("Drivetrain - Right Encoder", m_rightEncoder);
 	}
 
 	/**
@@ -116,8 +128,8 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * @param _speeds Individual speeds of each side.
 	 */
 	public void pidTest(DifferentialDriveWheelSpeeds _speeds) {
-		final double leftOutput = m_leftPIDController.calculate(m_leftEncoder.getRate(), _speeds.leftMetersPerSecond);
-		final double rightOutput = m_rightPIDController.calculate(m_rightEncoder.getRate(),
+		final double leftOutput = m_leftPIDController.calculate(m_leftEncoder.getVelocity() / 632, _speeds.leftMetersPerSecond);
+		final double rightOutput = m_rightPIDController.calculate(m_rightEncoder.getVelocity() / 632,
 				_speeds.rightMetersPerSecond);
 		m_leftFront.setVoltage(leftOutput);
 		m_rightFront.setVoltage(rightOutput);
@@ -131,12 +143,34 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 */
 	public void pidTankDrive(double lSpeed, double rSpeed) {
 		updateOdometry();
-		final double leftOutput = m_leftPIDController.calculate(m_leftEncoder.getRate(), lSpeed);
-		final double rightOutput = m_rightPIDController.calculate(m_rightEncoder.getRate(), rSpeed);
-		m_leftFront.set(leftOutput * 0.5);
-		m_rightFront.set(rightOutput * 0.5);
+		final double leftOutput = m_leftPIDController.calculate(m_leftEncoder.getVelocity() / 632, lSpeed);
+		final double rightOutput = m_rightPIDController.calculate(m_rightEncoder.getVelocity() / 632, rSpeed);
+		m_leftFront.set(leftOutput * 0.5); // Shifted from 1.0 to 0.5
+		m_rightFront.set(rightOutput * 0.5); // Same as line previous line
 		SmartDashboard.putNumber("left_out", leftOutput);
 		SmartDashboard.putNumber("right_out", rightOutput);
+	}
+
+	/**
+	 * EXPERIMENTAL: Go to a set distance (in feet)
+	 * 
+	 * @param distance     How far you should go (in feet)
+	 */
+	public void setPosition(double distance) {
+		distance = (distance / 12) / (Math.PI * 6); // Converts to Revolutions
+		m_leftPID.setReference(distance, ControlType.kPosition);
+		m_rightPID.setReference(distance, ControlType.kPosition);
+	}
+
+	/**
+	 * EXPERIMENTAL: Go to a set speed (in feet per second)
+	 * 
+	 * @param velocity     How fast you should go (in feet/s)
+	 */
+	public void setVelocity(double velocity) {
+		velocity = (velocity * 12) / (Math.PI * 6) / 60;
+		m_leftPID.setReference(velocity, ControlType.kVelocity);
+		m_rightPID.setReference(velocity, ControlType.kVelocity);
 	}
 
 	/**
@@ -175,7 +209,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * Updates the odometry object with the latest sensor data.
 	 */
 	private void updateOdometry() {
-		m_odometry.update(getAngle(), m_leftEncoder.getDistance(), m_rightEncoder.getDistance());
+		m_odometry.update(getAngle(), m_leftEncoder.getPosition(), m_rightEncoder.getPosition());
 	}
 
 	/**
@@ -184,7 +218,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * @return Left-side displacement
 	 */
 	public double getLeftDistance() {
-		return m_leftEncoder.getDistance();
+		return m_leftEncoder.getPosition();
 	}
 
 	/**
@@ -193,7 +227,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * @return Right-side displacement
 	 */
 	public double getRightDistance() {
-		return m_rightEncoder.getDistance();
+		return m_rightEncoder.getPosition();
 	}
 
 	/**
@@ -210,7 +244,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * Resets the encoders to zero, for autonomous commands and diagnostics.
 	 */
 	public void reset() {
-		m_leftEncoder.reset();
-		m_rightEncoder.reset();
+		// m_leftEncoder.reset();
+		// m_rightEncoder.reset();
 	}
 }

@@ -8,6 +8,9 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 /**
  * Wrapper class to handle the overhead for the PID Controller that the CAN
  * SPARK MAX uses.
+ * 
+ * TODO: Add a setReference() wrapper to reduce the overhead (Unit conversions?)
+ * Add a ControlType to Config? (It is fluid so it may not be necessary.)
  */
 public class PunkPIDController extends CANPIDController {
 
@@ -15,11 +18,11 @@ public class PunkPIDController extends CANPIDController {
 	 * Data type for Controller configs.
 	 */
 	public static class PIDControllerConfig {
-		private double P;
-		private double I;
-		private double D;
-		private double MIN_OUTPUT;
-		private double MAX_OUTPUT;
+		public double P;
+		public double I;
+		public double D;
+		public double MIN_OUTPUT;
+		public double MAX_OUTPUT;
 	}
 
 	private NetworkTableEntry pEntry, iEntry, dEntry; // Shuffleboard objects
