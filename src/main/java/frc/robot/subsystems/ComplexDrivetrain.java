@@ -47,7 +47,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 
 	private double[] heading;
 	@Log
-	private double velocity, highest_velocity, lowest_velocity;
+	private double velocity, highest_velocity, lowest_velocity, avgDist;
 
 	/**
 	 * Central class for all drivetrain-related activities.
@@ -68,12 +68,16 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 		m_kinematics = new DifferentialDriveKinematics(Constants.Drivetrain.kTrackWidth);
 		m_odometry = new DifferentialDriveOdometry(getAngle());
 
-		m_leftPIDController = new PIDController(1, 0, 0);
-		m_rightPIDController = new PIDController(1, 0, 0);
+		m_leftPIDController = new PIDController(1, 0.0015, 0);
+		m_rightPIDController = new PIDController(0.95, 0.001, 0);
+		m_leftPIDController.setTolerance(0.01, 0.005);
+		m_rightPIDController.setTolerance(0.01, 0.005);
 
 		m_gearShift = new DoubleSolenoid(Constants.kGearShift[0], Constants.kGearShift[1]);
 		m_leftEncoder = m_leftFront.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
 		m_rightEncoder = m_rightFront.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
+		m_leftEncoder.setPosition(0);
+		m_rightEncoder.setPosition(0);
 		m_leftPID = m_leftFront.getPIDController();
 		m_rightPID = m_rightFront.getPIDController();
 
@@ -82,7 +86,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 		// m_rightPID = new PunkPIDController(m_rightFront, Constants.Drivetrain.kPIDConfig, true);
 
 		m_leftPID.setP(0.1);
-		m_leftPID.setI(1e-4);
+		m_leftPID.setI(1e-5);
 		m_leftPID.setD(1);
 		m_leftPID.setIZone(0);
 		m_leftPID.setFF(0);
@@ -97,6 +101,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 
 		SmartDashboard.putData("Drivetrain - Left PID", m_leftPIDController);
 		SmartDashboard.putData("Drivetrain - Right PID", m_rightPIDController);
+		
 	}
 
 	/**
@@ -147,8 +152,13 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 		final double rightOutput = m_rightPIDController.calculate(m_rightEncoder.getVelocity() / 632, rSpeed);
 		m_leftFront.set(leftOutput * 0.5); // Shifted from 1.0 to 0.5
 		m_rightFront.set(rightOutput * 0.5); // Same as line previous line
+		SmartDashboard.putNumber("Left_Enc", m_leftEncoder.getVelocity());
+		SmartDashboard.putNumber("Right_Enc", m_rightEncoder.getVelocity());
 		SmartDashboard.putNumber("left_out", leftOutput);
 		SmartDashboard.putNumber("right_out", rightOutput);
+		SmartDashboard.putNumber("Drivetrain - Left Error", m_leftPIDController.getVelocityError());
+		SmartDashboard.putNumber("Drivetrain - Left Setpoint", lSpeed);
+
 	}
 
 	/**
@@ -167,10 +177,14 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * 
 	 * @param velocity     How fast you should go (in feet/s)
 	 */
-	public void setVelocity(double velocity) {
+	public void setVelocity(double lSpeed, double rSpeed) {
+		SmartDashboard.putNumber("Left_Enc", m_leftEncoder.getVelocity());
+		SmartDashboard.putNumber("Right_Enc", m_rightEncoder.getVelocity());
+		SmartDashboard.putNumber("Velocity", velocity);
+		SmartDashboard.putNumber("Drivetrain - Left Setpoint", lSpeed);
 		velocity = (velocity * 12) / (Math.PI * 6) / 60;
-		m_leftPID.setReference(velocity, ControlType.kVelocity);
-		m_rightPID.setReference(velocity, ControlType.kVelocity);
+		m_leftPID.setReference(lSpeed, ControlType.kVelocity);
+		m_rightPID.setReference(rSpeed, ControlType.kVelocity);
 	}
 
 	/**
@@ -218,7 +232,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * @return Left-side displacement
 	 */
 	public double getLeftDistance() {
-		return m_leftEncoder.getPosition();
+		return (m_leftEncoder.getPosition() * (Math.PI * 6)) / 12;
 	}
 
 	/**
@@ -227,7 +241,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * @return Right-side displacement
 	 */
 	public double getRightDistance() {
-		return m_rightEncoder.getPosition();
+		return (m_rightEncoder.getPosition() * (Math.PI * 6)) / 12;
 	}
 
 	/**
@@ -237,7 +251,8 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * @return Average displacement between each encoder.
 	 */
 	public double getDistance() {
-		return (getLeftDistance() + getRightDistance()) / 2;
+		avgDist = (getLeftDistance() + getRightDistance()) / 2;
+		return avgDist;
 	}
 
 	/**

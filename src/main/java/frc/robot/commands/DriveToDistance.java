@@ -18,13 +18,13 @@ public class DriveToDistance extends PIDCommand {
 	/**
 	 * Drives a certain distance.
 	 * 
-	 * @param distance    Distance (in meters) that you want to drive
+	 * @param distance    Distance (in feet) that you want to drive
 	 * @param _drivetrain Injected drivetrain object.
 	 */
 	public DriveToDistance(double distance, ComplexDrivetrain _drivetrain) {
 		super(
 				// The controller that the command will use
-				new PIDController(4, 0, 0),
+				new PIDController(0.2, 0, 0),
 				// This should return the measurement
 				_drivetrain::getDistance,
 				// This should return the setpoint (can also be a constant)
