@@ -11,11 +11,16 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ShiftGears;
+import frc.robot.subsystems.Colorsensing;
 import frc.robot.subsystems.ComplexDrivetrain;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.SlewRateLimiter;
 import frc.robot.subsystems.Shooter;
+import io.github.oblarg.oblog.annotations.Log;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.commands.DriveToDistance;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -27,17 +32,19 @@ import frc.robot.subsystems.Shooter;
 public class RobotContainer {
 	// Subsystems
 	public static ComplexDrivetrain drivetrain = new ComplexDrivetrain();
+	public static Colorsensing colorsensor = new Colorsensing();
 	// public static Shooter shooter = new Shooter();
 
-	// Commands
-	private RunCommand pidTankDrive = new RunCommand(
-			() -> drivetrain.pidTankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
-	private RunCommand curvatureDrive = new RunCommand(
-			() -> drivetrain.curvatureDrive(joystick.getRawAxis(1), joystick.getRawAxis(2)), drivetrain);
+	
 
 	// Controllers
 	private final SlewRateLimiter m_speedLimiter = new SlewRateLimiter(10);
 	public static Joystick joystick = new Joystick(0);
+	// Command
+	private RunCommand pidTankDrive = new RunCommand(
+			() -> drivetrain.pidTankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
+	// private RunCommand curvatureDrive = new RunCommand(
+			// () -> drivetrain.curvatureDrive(joystick.getRawAxis(1), joystick.getRawAxis(2)), drivetrain);
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -56,17 +63,17 @@ public class RobotContainer {
 	 */
 	private void configureButtonBindings() {
 		// new JoystickButton(joystick, 4).whenPressed(new ShiftGears(test_drivetrain));
-
-		// new JoystickButton(joystick, 5).whenPressed(new RunCommand(() ->
-		// shooter.shoot(1), shooter));
-		// new JoystickButton(joystick, 5).whenPressed(new RunCommand(() ->
-		// shooter.test_shoot(), shooter));
-		// new JoystickButton(joystick, 6).whenPressed(new RunCommand(() ->
-		// shooter.shoot(2), shooter));
-		// new JoystickButton(joystick, 7).whenPressed(new RunCommand(() ->
-		// shooter.shoot(3), shooter));
-		// new JoystickButton(joystick, 8).whenPressed(new RunCommand(() ->
-		// shooter.shoot(4), shooter));
+		new JoystickButton(joystick, 1).whenPressed(new InstantCommand(
+			() -> colorsensor.colorSpin(1), colorsensor));
+		new JoystickButton(joystick, 2).whenPressed(new InstantCommand(
+			() -> colorsensor.colorSpin(2), colorsensor));
+		new JoystickButton(joystick, 3).whenPressed(new InstantCommand(
+			() -> colorsensor.colorSpin(3), colorsensor));
+		new JoystickButton(joystick, 4).whenPressed(new InstantCommand(
+			() -> colorsensor.colorSpin(4), colorsensor));
+		new JoystickButton(joystick, 9).whenPressed(new InstantCommand(
+			() -> colorsensor.spin(), colorsensor));
+		
 	}
 
 	private void configureDefaultCommands() {
@@ -78,7 +85,9 @@ public class RobotContainer {
 	 *
 	 * @return the command to run in autonomous
 	 */
-	/*
-	 * public Command getAutonomousCommand() { return; }
-	 */
+
+	public Command getAutonomousCommand() { 
+		return new DriveToDistance(-2, drivetrain);
+	}
+	
 }

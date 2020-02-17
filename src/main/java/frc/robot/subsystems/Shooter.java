@@ -12,7 +12,11 @@ import frc.lib.utils.PunkSparkMax;
 
 import io.github.oblarg.oblog.annotations.Log;
 
+import com.revrobotics.CANEncoder;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.ControlType;
+import com.revrobotics.AlternateEncoderType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Encoder;
@@ -30,18 +34,18 @@ public class Shooter extends SubsystemBase {
 	@Log
 	public double encoderCount;
 
-	private Encoder m_encoder;
+	private CANEncoder m_encoder;
 	private CANSparkMax m_shooter;
 
-	private PIDController m_pidController;
+	private CANPIDController m_pidController;
 	
 	/**
 	 * Creates a new Shooter.
 	 */
 	public Shooter() {
-		m_encoder = new Encoder(6, 7, 8);
 		m_shooter = new PunkSparkMax(5, Constants.Shooter.kConfig);
-		
+		m_encoder = m_shooter.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
+
 		kP = 0.03;
 		kI = 0;
 		kD = 0;
@@ -52,17 +56,12 @@ public class Shooter extends SubsystemBase {
 		maxRPM = 7200;
 		setPoint = 7100;
 
-		m_pidController = new PIDController(kP, kI, kD);
+		m_pidController = m_shooter.getPIDController();
 
-		m_pidController.setIntegratorRange(kMinOutput, kMaxOutput);
-		m_pidController.setTolerance(50);
 		m_pidController.setP(kP);
 		m_pidController.setI(kI);
 		m_pidController.setD(kD);
-		m_pidController.enableContinuousInput(-8000, 8000);
-		m_pidController.setSetpoint(7100);
-		m_pidController.setTolerance(50);
-		m_pidController.setSetpoint(7100);
+		m_pidController.setOutputRange(kMinOutput, kMaxOutput);
 
 		dumpInfo();
 	}
@@ -73,64 +72,59 @@ public class Shooter extends SubsystemBase {
 	 * @return Speed of shooter.
 	 */
 	public double getMeasurement() {
-		return m_encoder.getRate();
+		return (m_encoder.getPosition() * (Math.PI * 6)) / 12;
 	}
 
-	/**
-	 * Gets whether or not the shooter is at the desired speed.
-	 * 
-	 * @return If the shooter is at the setpoint.
-	 */
-	public boolean atSetpoint() {
-		return m_pidController.atSetpoint();
+	private void shoot(double speed) {
+		m_pidController.setReference(speed, ControlType.kVelocity);
 	}
 
-	/**
-	 * Sets the shooter based on the button pressed.
-	 */
-	public void pid() {
-		prevError = error;
-		error = (m_pidController.getSetpoint() - (-1 * m_encoder.getRate()));
-		integralpid = error * 0.02;
-		derivativepid = (error - prevError) / 0.02;
-		power += -1 * (kP * error + kI * integralpid + kD * derivativepid) / 1000;
-	}
+	// /**
+	//  * Sets the shooter based on the button pressed.
+	//  */
+	// public void pid() {
+	// 	prevError = error;
+	// 	error = (m_pidController.getSetpoint() - (-1 * m_encoder.getRate()));
+	// 	integralpid = error * 0.02;
+	// 	derivativepid = (error - prevError) / 0.02;
+	// 	power += -1 * (kP * error + kI * integralpid + kD * derivativepid) / 1000;
+	// }
 
-	/**
-	 * Sets the shooter based on the button pressed.
-	 */
-	public void shoot(double powerId) {
-		SmartDashboard.putNumber("Shooter - PowerID", powerId);
+	// /**
+	//  * Sets the shooter based on the button pressed.
+	//  */
+	// public void shoot(double powerId) {
+	// 	SmartDashboard.putNumber("Shooter - PowerID", powerId);
 		
-		if (powerId == 1) {
-			pid();
-		} else if (powerId == 2) {
-			power = 0.2;
-		} else if (powerId == 3) {
-			power = 0.76;
-		} else if (powerId == 4) {
-			power = 0.80;
-		} else {
-			power = 0;
-		}
-		m_shooter.set(power);
-	}
+	// 	if (powerId == 1) {
+	// 		pid();
+	// 	} else if (powerId == 2) {
+	// 		power = 0.2;
+	// 	} else if (powerId == 3) {
+	// 		power = 0.76;
+	// 	} else if (powerId == 4) {
+	// 		power = 0.80;
+	// 	} else {
+	// 		power = 0;
+	// 	}
+	// 	m_shooter.set(power);
+	// }
 
-	double P, I, D = 0.002;
-	double rcw, previous_error, derivative;
-	/**
-	 * Does PID calculation and applies them manually.
-	 */
-	public void manualPID() {
+	// double P, I, D = 0.002;
+	// double rcw, previous_error, derivative;
+	// /**
+	//  * Does PID calculation and applies them manually.
+	//  */
+	// public void manualPID() {
 		
-		previous_error = error;
-		error = 7100 - (-1 * m_encoder.getRate()); // Error = Target - Actual
-		integralpid += (error * .02); // Integral is increased by the error*time (which is .02 seconds using normal
-										// IterativeRobot)
-		derivative = (error - previous_error) / .02;
-		rcw = -1 * (P * error + I * integralpid + D * derivative) / 1000;
-	}
-
+	// 	previous_error = error;
+	// 	error = 7100 - (-1 * m_encoder.getRate()); // Error = Target - Actual
+	// 	integralpid += (error * .02); // Integral is increased by the error*time (which is .02 seconds using normal
+	// 									// IterativeRobot)
+	// 	derivative = (error - previous_error) / .02;
+	// 	rcw = -1 * (P * error + I * integralpid + D * derivative) / 1000;
+	// }
+	
 	/**
 	 * Puts constants on the SmartDashboard.
 	 */
