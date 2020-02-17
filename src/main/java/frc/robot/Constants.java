@@ -65,6 +65,17 @@ public final class Constants {
 			kConfig.INVERTED = false;
 		}
 	}
+	public static final class Limelight {
+		// Target height (reflective tape on the bottom of center hexagon)
+		public static final double kTargetHeight = 2.1145;
+		// Mount height of Limelight
+		public static final double kMountHeight = 0.0;
+		// Mount angle of Limelight
+		public static final double kMountAngle = 0.0;
+		// Optimal firing distance 
+		public static final double kOptimalTargetDistance = 1.3716;
+	}
 
 	public static int[] kGearShift = { 0, 1 };
+
 }
