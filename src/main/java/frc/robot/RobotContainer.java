@@ -43,8 +43,8 @@ public class RobotContainer {
 	// Command
 	private RunCommand pidTankDrive = new RunCommand(
 			() -> drivetrain.pidTankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
-	private RunCommand curvatureDrive = new RunCommand(
-			() -> drivetrain.curvatureDrive(joystick.getRawAxis(1), joystick.getRawAxis(2)), drivetrain);
+	// private RunCommand curvatureDrive = new RunCommand(
+			// () -> drivetrain.curvatureDrive(joystick.getRawAxis(1), joystick.getRawAxis(2)), drivetrain);
 
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.

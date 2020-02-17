@@ -75,7 +75,7 @@ public class Colorsensing extends SubsystemBase {
     m_colorMatcher.addColorMatch(kGreenTarget);
     m_colorMatcher.addColorMatch(kRedTarget);
     m_colorMatcher.addColorMatch(kYellowTarget);   
-    //m_spinner = new Spark(0); 
+    m_spinner = new Spark(0); 
   }
 
   // private final Joystick m_stick = new Joystick(0);
@@ -128,7 +128,7 @@ public class Colorsensing extends SubsystemBase {
 	 * Open Smart Dashboard or Shuffleboard to see the color detected by the 
 	 * sensor.
 	 */
-	SmartDashboard.putNumber("Red", detectedColor.red);
+	SmartDashboard.putNumber("Red", m_colorSensor.getRed());
 	SmartDashboard.putNumber("Green", detectedColor.green);
 	SmartDashboard.putNumber("Blue", detectedColor.blue);
 	SmartDashboard.putNumber("Confidence", match.confidence);

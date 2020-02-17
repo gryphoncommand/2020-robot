@@ -32,14 +32,14 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 
 	private SpeedControllerGroup m_left, m_right;
 
-	private final DifferentialDrive m_drive;
+	// private final DifferentialDrive m_drive;
 	private final DifferentialDriveKinematics m_kinematics;
 	private final DifferentialDriveOdometry m_odometry;
 
 	private final PIDController m_leftPIDController, m_rightPIDController;
 	private CANPIDController m_leftPID, m_rightPID;
 
-	private DoubleSolenoid m_gearShift;
+	// private DoubleSolenoid m_gearShift;
 
 	private CANEncoder m_leftEncoder, m_rightEncoder;
 
@@ -64,7 +64,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 		m_gyro = new PigeonIMU(0);
 		heading = new double[3];
 
-		m_drive = new DifferentialDrive(m_left, m_right);
+		// m_drive = new DifferentialDrive(m_left, m_right);
 		m_kinematics = new DifferentialDriveKinematics(Constants.Drivetrain.kTrackWidth);
 		m_odometry = new DifferentialDriveOdometry(getAngle());
 
@@ -73,7 +73,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 		m_leftPIDController.setTolerance(0.01, 0.005);
 		m_rightPIDController.setTolerance(0.01, 0.005);
 
-		m_gearShift = new DoubleSolenoid(Constants.kGearShift[0], Constants.kGearShift[1]);
+		// m_gearShift = new DoubleSolenoid(Constants.kGearShift[0], Constants.kGearShift[1]);
 		m_leftEncoder = m_leftFront.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
 		m_rightEncoder = m_rightFront.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
 		m_leftEncoder.setPosition(0);
@@ -124,7 +124,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * @param zRotation Rotation rate for robot (Clockwise is positive)
 	 */
 	public void curvatureDrive(double xSpeed, double zRotation) {
-		m_drive.curvatureDrive(xSpeed, zRotation, false);
+		// m_drive.curvatureDrive(xSpeed, zRotation, false);
 	}
 
 	/**
@@ -205,7 +205,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * @param value State to reach (Can be forward, reverse, or off.)
 	 */
 	public void shiftGears(Value value) {
-		m_gearShift.set(value);
+		// m_gearShift.set(value);
 	}
 
 	/**

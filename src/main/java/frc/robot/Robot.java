@@ -10,10 +10,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.Colorsensing;
 import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.Joystick;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -27,9 +25,7 @@ public class Robot extends TimedRobot {
 	private Command m_autonomousCommand;
 
 	private RobotContainer m_robotContainer;
-	private Compressor m_compressor;
-	private Joystick m_stick = new Joystick(0);
-	private Colorsensing m_spinner = new Colorsensing();
+	// private Compressor m_compressor;
 
 	/**
 	 * This function is run when the robot is first started up and should be used
@@ -41,7 +37,7 @@ public class Robot extends TimedRobot {
 		// and put our
 		// autonomous chooser on the dashboard.
 		m_robotContainer = new RobotContainer();
-		m_compressor = new Compressor();
+		// m_compressor = new Compressor();
 		Logger.configureLoggingAndConfig(m_robotContainer, false);
 	}
 
@@ -109,7 +105,7 @@ public class Robot extends TimedRobot {
 		if (m_autonomousCommand != null) {
 			m_autonomousCommand.cancel();
 		}
-		m_compressor.start();
+		// m_compressor.start();
 	}
 
 	/**
