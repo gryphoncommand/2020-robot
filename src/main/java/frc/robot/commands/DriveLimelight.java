@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.lib.utils.PunkLimelight;
 import frc.robot.Constants;
+import frc.robot.Constants.Limelight;
 import frc.robot.subsystems.ComplexDrivetrain;
 
 public class DriveLimelight extends CommandBase {
@@ -11,7 +12,7 @@ public class DriveLimelight extends CommandBase {
 
     public DriveLimelight(ComplexDrivetrain drive) {
         m_drive = drive;
-        m_limelight = new PunkLimelight();
+        m_limelight = new PunkLimelight(0, null);
     }
 
     public double getDistance() {
