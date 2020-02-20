@@ -43,6 +43,9 @@ public class RobotContainer {
 	// Command
 	private RunCommand pidTankDrive = new RunCommand(
 			() -> drivetrain.pidTankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
+	private RunCommand colorSensor = new RunCommand(
+			() -> colorsensor.colorPeriodic(), colorsensor);
+
 	// private RunCommand curvatureDrive = new RunCommand(
 			// () -> drivetrain.curvatureDrive(joystick.getRawAxis(1), joystick.getRawAxis(2)), drivetrain);
 
@@ -73,11 +76,11 @@ public class RobotContainer {
 			() -> colorsensor.colorSpin(4), colorsensor));
 		new JoystickButton(joystick, 9).whenPressed(new InstantCommand(
 			() -> colorsensor.spin(), colorsensor));
-		
 	}
 
 	private void configureDefaultCommands() {
 		drivetrain.setDefaultCommand(pidTankDrive);
+		colorsensor.setDefaultCommand(colorSensor);
 	}
 
 	/**

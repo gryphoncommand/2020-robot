@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
+import io.github.oblarg.oblog.Logger;
+import io.github.oblarg.oblog.annotations.Log;
 
 import com.revrobotics.ColorSensorV3;
 import com.revrobotics.ColorMatchResult;
@@ -54,6 +56,10 @@ public class Colorsensing extends SubsystemBase {
   private final Color kGreenTarget = ColorMatch.makeColor(0.197, 0.561, 0.240);
   private final Color kRedTarget = ColorMatch.makeColor(0.561, 0.232, 0.114);
   private final Color kYellowTarget = ColorMatch.makeColor(0.361, 0.524, 0.113);
+  @Log
+  private double red, blue, green, confidence;
+  @Log
+  private String theColor;
 
   public Colorsensing() {
     m_colorMatcher.addColorMatch(kBlueTarget);
@@ -81,7 +87,8 @@ public class Colorsensing extends SubsystemBase {
      * an object is the more light from the surroundings will bleed into the 
      * measurements and make it difficult to accurately determine its color.
      */
-    Color detectedColor = m_colorSensor.getColor();
+	Color detectedColor = m_colorSensor.getColor();
+	
 
     /**
      * Run the color match algorithm on our detected color
@@ -105,10 +112,10 @@ public class Colorsensing extends SubsystemBase {
      * Open Smart Dashboard or Shuffleboard to see the color detected by the 
      * sensor.
      */
-    SmartDashboard.putNumber("Red", detectedColor.red);
-    SmartDashboard.putNumber("Green", detectedColor.green);
-    SmartDashboard.putNumber("Blue", detectedColor.blue);
-    SmartDashboard.putNumber("Confidence", match.confidence);
-    SmartDashboard.putString("Detected Color", colorString);
+    red = detectedColor.red;
+    green = detectedColor.green;
+    blue = detectedColor.blue;
+    confidence = match.confidence;
+    theColor = colorString;
   }
 }

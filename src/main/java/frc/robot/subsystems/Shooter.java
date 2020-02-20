@@ -9,7 +9,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import io.github.oblarg.oblog.Logger;
+import io.github.oblarg.oblog.annotations.Log;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANPIDController;
@@ -56,7 +57,8 @@ public class Shooter extends SubsystemBase {
   private CANSparkMax m_motor;
   private CANPIDController m_pidController;
   private CANEncoder m_encoder;
-  public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr;
+  @Log
+  public double kP, kI, kD, kIz, kFF, kMaxOutput, kMinOutput, maxRPM, maxVel, minVel, maxAcc, allowedErr, setPoint, processVariable, output;
 
   public Shooter() {
     // initialize motor
@@ -114,21 +116,21 @@ public class Shooter extends SubsystemBase {
     m_pidController.setSmartMotionAllowedClosedLoopError(allowedErr, smartMotionSlot);
 
     // display PID coefficients on SmartDashboard
-    SmartDashboard.putNumber("P Gain", kP);
-    SmartDashboard.putNumber("I Gain", kI);
-    SmartDashboard.putNumber("D Gain", kD);
-    SmartDashboard.putNumber("I Zone", kIz);
-    SmartDashboard.putNumber("Feed Forward", kFF);
-    SmartDashboard.putNumber("Max Output", kMaxOutput);
-    SmartDashboard.putNumber("Min Output", kMinOutput);
+    // SmartDashboard.putNumber("P Gain", kP);
+    // SmartDashboard.putNumber("I Gain", kI);
+    // SmartDashboard.putNumber("D Gain", kD);
+    // SmartDashboard.putNumber("I Zone", kIz);
+    // SmartDashboard.putNumber("Feed Forward", kFF);
+    // SmartDashboard.putNumber("Max Output", kMaxOutput);
+    // SmartDashboard.putNumber("Min Output", kMinOutput);
 
     // display Smart Motion coefficients
-    SmartDashboard.putNumber("Max Velocity", maxVel);
-    SmartDashboard.putNumber("Min Velocity", minVel);
-    SmartDashboard.putNumber("Max Acceleration", maxAcc);
-    SmartDashboard.putNumber("Allowed Closed Loop Error", allowedErr);
-    SmartDashboard.putNumber("Set Position", 0);
-    SmartDashboard.putNumber("Set Velocity", 0);
+    // SmartDashboard.putNumber("Max Velocity", maxVel);
+    // SmartDashboard.putNumber("Min Velocity", minVel);
+    // SmartDashboard.putNumber("Max Acceleration", maxAcc);
+    // SmartDashboard.putNumber("Allowed Closed Loop Error", allowedErr);
+    // SmartDashboard.putNumber("Set Position", 0);
+    // SmartDashboard.putNumber("Set Velocity", 0);
 
     // button to toggle between velocity and smart motion modes
     SmartDashboard.putBoolean("Mode", true);
@@ -162,8 +164,7 @@ public class Shooter extends SubsystemBase {
     if((minV != minVel)) { m_pidController.setSmartMotionMinOutputVelocity(minV,0); minVel = minV; }
     if((maxA != maxAcc)) { m_pidController.setSmartMotionMaxAccel(maxA,0); maxAcc = maxA; }
     if((allE != allowedErr)) { m_pidController.setSmartMotionAllowedClosedLoopError(allE,0); allowedErr = allE; }
-
-    double setPoint, processVariable;
+	
     boolean mode = SmartDashboard.getBoolean("Mode", false);
     if(mode) {
       setPoint = SmartDashboard.getNumber("Set Velocity", 0);
@@ -180,8 +181,6 @@ public class Shooter extends SubsystemBase {
       processVariable = m_encoder.getPosition();
     }
     
-    SmartDashboard.putNumber("SetPoint", setPoint);
-    SmartDashboard.putNumber("Process Variable", processVariable);
-    SmartDashboard.putNumber("Output", m_motor.getAppliedOutput());
+    output = m_motor.getAppliedOutput();
   }
 }
