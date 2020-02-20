@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.wpilibj.Compressor;
+import frc.robot.subsystems.Colorsensing;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj.Compressor;
 @SuppressWarnings({"PMD.SingularField"})
 public class Robot extends TimedRobot {
 	private Command m_autonomousCommand;
+	private Colorsensing m_ColorSensor;
 
 	private RobotContainer m_robotContainer;
 	// private Compressor m_compressor;
@@ -37,6 +39,7 @@ public class Robot extends TimedRobot {
 		// and put our
 		// autonomous chooser on the dashboard.
 		m_robotContainer = new RobotContainer();
+		m_ColorSensor = new Colorsensing();
 		// m_compressor = new Compressor();
 		Logger.configureLoggingAndConfig(m_robotContainer, false);
 	}
@@ -61,6 +64,7 @@ public class Robot extends TimedRobot {
 		// block in order for anything in the Command-based framework to work.
 		CommandScheduler.getInstance().run();
 		Logger.updateEntries();
+		m_ColorSensor.colorPeriodic();
 	}
 
 	/**

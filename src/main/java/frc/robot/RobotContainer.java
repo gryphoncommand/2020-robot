@@ -33,7 +33,7 @@ public class RobotContainer {
 	// Subsystems
 	public static ComplexDrivetrain drivetrain = new ComplexDrivetrain();
 	public static Colorsensing colorsensor = new Colorsensing();
-	// public static Shooter shooter = new Shooter();
+	public static Shooter shooter = new Shooter();
 
 	
 
