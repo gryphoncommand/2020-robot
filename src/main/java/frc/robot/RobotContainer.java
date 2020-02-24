@@ -12,10 +12,13 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ShiftGears;
 import frc.robot.subsystems.ComplexDrivetrain;
+import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj.SlewRateLimiter;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Intake;
+import edu.wpi.first.wpilibj.Spark;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -28,6 +31,7 @@ public class RobotContainer {
 	// Subsystems
 	public static ComplexDrivetrain drivetrain = new ComplexDrivetrain();
 	// public static Shooter shooter = new Shooter();
+	private Intake m_intake;
 
 	// Commands
 	private RunCommand pidTankDrive = new RunCommand(
@@ -46,6 +50,7 @@ public class RobotContainer {
 	public RobotContainer() {
 		configureButtonBindings();
 		configureDefaultCommands();
+		m_intake = new Intake();
 	}
 
 	/**
@@ -67,6 +72,7 @@ public class RobotContainer {
 		// shooter.shoot(3), shooter));
 		// new JoystickButton(joystick, 8).whenPressed(new RunCommand(() ->
 		// shooter.shoot(4), shooter));
+		new JoystickButton(joystick, 4).whenPressed(new RunCommand(() -> m_intake.pullIntake(), m_intake));
 	}
 
 	private void configureDefaultCommands() {
