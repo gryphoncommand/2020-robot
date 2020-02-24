@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj.Spark;
  * This is a simple example to show how the REV Color Sensor V3 can be used to
  * detect pre-configured colors.
  */
-public class Colorsensing extends SubsystemBase {
+public class ColorSpinner extends SubsystemBase {
 	private Spark m_spinner;
   /**
    * Change the I2C port below to match the connection of your color sensor
@@ -61,7 +61,7 @@ public class Colorsensing extends SubsystemBase {
   @Log
   private String theColor;
 
-  public Colorsensing() {
+  public ColorSpinner() {
     m_colorMatcher.addColorMatch(kBlueTarget);
     m_colorMatcher.addColorMatch(kGreenTarget);
     m_colorMatcher.addColorMatch(kRedTarget);

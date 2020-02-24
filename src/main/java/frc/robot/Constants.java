@@ -9,6 +9,8 @@ package frc.robot;
 
 import frc.lib.utils.PunkSparkMax.SparkMaxConfig;
 import com.revrobotics.CANSparkMax.IdleMode;
+
+import frc.lib.utils.PunkLimelight.LimelightConfig;
 import frc.lib.utils.PunkPIDController.PIDControllerConfig;
 
 /**
@@ -63,7 +65,10 @@ public final class Constants {
 			kPIDConfig.MAX_OUTPUT = 1;
 		}
 	}
-
+	public static final class Intake {
+		public static final int kmIntake = 0;
+		public static final int kmIndexer = 1;
+	}
 	public static final class Shooter {
 		public static final int kmShooter = 5;
 		public static final SparkMaxConfig kConfig = new SparkMaxConfig();
@@ -73,6 +78,13 @@ public final class Constants {
 			kConfig.IDLE_MODE = IdleMode.kCoast;
 			kConfig.INVERTED = false;
 		}
+	}
+	public static final LimelightConfig kLimelight = new LimelightConfig();
+	static {
+		kLimelight.LED_BEHAVIOR = 0;
+		kLimelight.CAMERA_TYPE = 1;
+		kLimelight.PIPELINE = 0;
+		kLimelight.SNAPSHOT = 0;
 	}
 	public static final class Limelight {
 		// Target height (reflective tape on the bottom of center hexagon)

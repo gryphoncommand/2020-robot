@@ -80,6 +80,8 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 		m_rightEncoder.setPosition(0);
 		m_leftPID = m_leftFront.getPIDController();
 		m_rightPID = m_rightFront.getPIDController();
+		m_leftPID.setFeedbackDevice(m_leftEncoder);
+		m_rightPID.setFeedbackDevice(m_rightEncoder);
 
 		// TEST Constructor - Not sure if this works.
 		// m_leftPID = new PunkPIDController(m_leftFront, Constants.Drivetrain.kPIDConfig, true);

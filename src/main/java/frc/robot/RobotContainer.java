@@ -11,11 +11,11 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ShiftGears;
-import frc.robot.subsystems.Colorsensing;
+import frc.robot.subsystems.ColorSpinner;
 import frc.robot.subsystems.ComplexDrivetrain;
+import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj.SlewRateLimiter;
 import frc.robot.subsystems.Shooter;
 import io.github.oblarg.oblog.annotations.Log;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,13 +32,12 @@ import frc.robot.commands.DriveToDistance;
 public class RobotContainer {
 	// Subsystems
 	public static ComplexDrivetrain drivetrain = new ComplexDrivetrain();
-	public static Colorsensing colorsensor = new Colorsensing();
+	public static ColorSpinner colorsensor = new ColorSpinner();
 	public static Shooter shooter = new Shooter();
+	public static Intake intake = new Intake();
 
-	
 
 	// Controllers
-	private final SlewRateLimiter m_speedLimiter = new SlewRateLimiter(10);
 	public static Joystick joystick = new Joystick(0);
 	// Command
 	private RunCommand pidTankDrive = new RunCommand(
@@ -47,8 +46,9 @@ public class RobotContainer {
 			() -> colorsensor.colorPeriodic(), colorsensor);
 
 	// private RunCommand curvatureDrive = new RunCommand(
-			// () -> drivetrain.curvatureDrive(joystick.getRawAxis(1), joystick.getRawAxis(2)), drivetrain);
-
+			// () -> drivetrain.curvatureDrive(joystick.getRawAxis(1), joystick.getRawAxis(2)), drivetrain);\
+	// FOR TESTING PURPOSES ONLY - Runs the shooter based off of the SmartDashboard
+	private RunCommand testShooter = new RunCommand(() -> shooter.shooterPeriodic(), shooter);
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
@@ -76,11 +76,13 @@ public class RobotContainer {
 			() -> colorsensor.colorSpin(4), colorsensor));
 		new JoystickButton(joystick, 9).whenPressed(new InstantCommand(
 			() -> colorsensor.spin(), colorsensor));
+
 	}
 
 	private void configureDefaultCommands() {
 		drivetrain.setDefaultCommand(pidTankDrive);
 		colorsensor.setDefaultCommand(colorSensor);
+		shooter.setDefaultCommand(testShooter);
 	}
 
 	/**
