@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.wpilibj.Compressor;
 import frc.lib.utils.PunkLimelight;
-import frc.robot.Constants;
+// import frc.robot.Constants;
 
 /**
  * The VM is configured to automatically run this class, and to call the

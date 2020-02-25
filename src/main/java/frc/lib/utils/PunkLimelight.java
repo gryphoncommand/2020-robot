@@ -1,10 +1,9 @@
 package frc.lib.utils;
 
-import com.revrobotics.CANSparkMax;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Wrapper class to handle the Limelight.

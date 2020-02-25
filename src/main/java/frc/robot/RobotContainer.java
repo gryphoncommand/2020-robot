@@ -17,10 +17,11 @@ import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.Shooter;
-import io.github.oblarg.oblog.annotations.Log;
+// import io.github.oblarg.oblog.annotations.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.DriveToDistance;
+import frc.robot.subsystems.Climber;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -35,7 +36,7 @@ public class RobotContainer {
 	public static ColorSpinner colorsensor = new ColorSpinner();
 	public static Shooter shooter = new Shooter();
 	public static Intake intake = new Intake();
-
+	public static Climber climber = new Climber();
 
 	// Controllers
 	public static Joystick joystick = new Joystick(0);
@@ -74,8 +75,22 @@ public class RobotContainer {
 		// Right Trigger - Shooter
 		new JoystickButton(joystick, 8).whenPressed(new InstantCommand(() -> shooter.shooterPeriodic(), shooter));
 		// Share - Color Sensor
+		// D-pad??????????????????
 		new JoystickButton(joystick, 9).whenPressed(new InstantCommand(
 			() -> colorsensor.spin(), colorsensor));
+		if (joystick.getPOV(0) == 90) {
+			new InstantCommand(
+			() -> climber.moveClimber(0.5), climber);
+		} else if (joystick.getPOV(0) == 270) {
+			new InstantCommand(
+			() -> climber.moveClimber(-0.5), climber);
+		} else if (joystick.getPOV(1) == 0) {
+			new InstantCommand(
+			() -> climber.liftBot(0.5), climber);
+		} else if (joystick.getPOV(1) == 180) {
+			new InstantCommand(
+			() -> climber.liftBot(-0.5), climber);
+		} 
 
 	}
 

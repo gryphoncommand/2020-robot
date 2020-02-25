@@ -12,16 +12,21 @@ import edu.wpi.first.wpilibj.Spark;
 import frc.robot.Constants;
 
 public class Climber extends SubsystemBase {
-  private Spark m_climber;
+  private Spark m_pvcClimber, m_wenchClimber;
   /**
    * Creates a new Climber.
    */
   public Climber() {
-	m_climber = new Spark(Constants.kClimberMotor);
+	m_pvcClimber = new Spark(Constants.kClimberMotor);
+	m_wenchClimber = new Spark(Constants.kWenchMotor);
   }
-  
+
   public void moveClimber(double speed) {
-	m_climber.set(speed);
+	m_pvcClimber.set(speed);
+  }
+
+  public void liftBot(double speed) {
+	  m_wenchClimber.set(speed);
   }
 
   @Override

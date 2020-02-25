@@ -9,8 +9,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import io.github.oblarg.oblog.Logger;
-import io.github.oblarg.oblog.annotations.Log;
+// import io.github.oblarg.oblog.annotations.Log;
 
 import com.revrobotics.AlternateEncoderType;
 import com.revrobotics.CANEncoder;
