@@ -102,5 +102,6 @@ public final class Constants {
 	}
 
 	public static int[] kGearShift = { 0, 1 };
+	public static final int kClimberMotor = 2;
 
 }

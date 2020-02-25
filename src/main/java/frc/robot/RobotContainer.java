@@ -65,7 +65,7 @@ public class RobotContainer {
 	 * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
 	 */
 	private void configureButtonBindings() {
-		// new JoystickButton(joystick, 4).whenPressed(new ShiftGears(test_drivetrain));
+		new JoystickButton(joystick, 4).whenPressed(new ShiftGears(drivetrain));
 		new JoystickButton(joystick, 1).whenPressed(new InstantCommand(
 			() -> colorsensor.colorSpin(1), colorsensor));
 		new JoystickButton(joystick, 2).whenPressed(new InstantCommand(

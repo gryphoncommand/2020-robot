@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.wpilibj.Compressor;
-import frc.robot.subsystems.ColorSpinner;
 import frc.lib.utils.PunkLimelight;
 import frc.robot.Constants;
 
