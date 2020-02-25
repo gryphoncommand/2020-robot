@@ -65,15 +65,15 @@ public class RobotContainer {
 	 * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
 	 */
 	private void configureButtonBindings() {
+		// Circle - Intake
+		new JoystickButton(joystick, 3).whenPressed(new InstantCommand(() -> intake.runIndexer(), intake));
+		// Triangle - Shift Gears
 		new JoystickButton(joystick, 4).whenPressed(new ShiftGears(drivetrain));
-		new JoystickButton(joystick, 1).whenPressed(new InstantCommand(
-			() -> colorsensor.colorSpin(1), colorsensor));
-		new JoystickButton(joystick, 2).whenPressed(new InstantCommand(
-			() -> colorsensor.colorSpin(2), colorsensor));
-		new JoystickButton(joystick, 3).whenPressed(new InstantCommand(
-			() -> colorsensor.colorSpin(3), colorsensor));
-		new JoystickButton(joystick, 4).whenPressed(new InstantCommand(
-			() -> colorsensor.colorSpin(4), colorsensor));
+		// Left Trigger - Intake
+		new JoystickButton(joystick, 7).whenPressed(new InstantCommand(() -> intake.runIntake(), intake));
+		// Right Trigger - Shooter
+		new JoystickButton(joystick, 8).whenPressed(new InstantCommand(() -> shooter.shooterPeriodic(), shooter));
+		// Share - Color Sensor
 		new JoystickButton(joystick, 9).whenPressed(new InstantCommand(
 			() -> colorsensor.spin(), colorsensor));
 
