@@ -95,6 +95,10 @@ public final class Constants {
 		public static final double kMountAngle = 0.0;
 		// Optimal firing distance 
 		public static final double kOptimalTargetDistance = 1.3716;
+		// Proportional distance constant.
+		public static final double kPDistance = 0.0;
+		// Proportional angle constant.
+		public static final double kPAngle = 0.0;
 	}
 
 	public static int[] kGearShift = { 0, 1 };

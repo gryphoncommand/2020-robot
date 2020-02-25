@@ -190,6 +190,22 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	}
 
 	/**
+	 * Set right motor group speed.
+	 * @param speed Speed to set motor group to.
+	 */
+	public void setRight(double speed) {
+		m_right.set(speed);
+	}
+
+	/**
+	 * Set left motor group speed.
+	 * @param speed Speed to set motor group to.
+	 */
+	public void setLeft(double speed) {
+		m_left.set(speed);
+	}
+
+	/**
 	 * PID-Controlled curvatureDrive equivalent.
 	 * 
 	 * @param xSpeed    Speed along the x-axis (Forward is positive)
