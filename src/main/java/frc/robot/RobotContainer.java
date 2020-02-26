@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.commands.DriveToDistance;
 import frc.robot.subsystems.Climber;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -78,19 +79,19 @@ public class RobotContainer {
 		// D-pad??????????????????
 		new JoystickButton(joystick, 9).whenPressed(new InstantCommand(
 			() -> colorsensor.spin(), colorsensor));
-		if (joystick.getPOV(0) == 90) {
-			new InstantCommand(
-			() -> climber.moveClimber(0.5), climber);
-		} else if (joystick.getPOV(0) == 270) {
-			new InstantCommand(
-			() -> climber.moveClimber(-0.5), climber);
-		} else if (joystick.getPOV(1) == 0) {
-			new InstantCommand(
-			() -> climber.liftBot(0.5), climber);
-		} else if (joystick.getPOV(1) == 180) {
-			new InstantCommand(
-			() -> climber.liftBot(-0.5), climber);
-		} 
+
+		/**
+		 * POV Functionality
+		 * For reference:
+		 * 0 - Up
+		 * 90 - Right
+		 * 180 - Down
+		 * 270 - Left
+		 */ 
+		new POVButton(joystick, 0).whenPressed(new InstantCommand(()->climber.moveClimber(0.5), climber));
+		new POVButton(joystick, 180).whenPressed(new InstantCommand(()->climber.moveClimber(-0.5), climber));
+		new POVButton(joystick, 90).whenPressed(new InstantCommand(()->climber.liftBot(0.5), climber));
+		new POVButton(joystick, 270).whenPressed(new InstantCommand(()->climber.liftBot(-0.5), climber));
 
 	}
 
