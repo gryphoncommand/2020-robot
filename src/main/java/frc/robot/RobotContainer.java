@@ -45,12 +45,12 @@ public class RobotContainer {
 	private RunCommand pidTankDrive = new RunCommand(
 			() -> drivetrain.pidTankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
 	private RunCommand colorSensor = new RunCommand(
-			() -> colorsensor.colorPeriodic(), colorsensor);
+			() -> colorsensor.periodic(), colorsensor);
 
 	// private RunCommand curvatureDrive = new RunCommand(
 			// () -> drivetrain.curvatureDrive(joystick.getRawAxis(1), joystick.getRawAxis(2)), drivetrain);\
 	// FOR TESTING PURPOSES ONLY - Runs the shooter based off of the SmartDashboard
-	private RunCommand testShooter = new RunCommand(() -> shooter.shooterPeriodic(), shooter);
+	//private RunCommand testShooter = new RunCommand(() -> shooter.shooterPeriodic(), shooter);
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
@@ -67,19 +67,28 @@ public class RobotContainer {
 	 * passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
 	 */
 	private void configureButtonBindings() {
-		// Circle - Intake
-		new JoystickButton(joystick, 3).whenPressed(new InstantCommand(() -> intake.runIndexer(), intake));
-		// Triangle - Shift Gears
-		new JoystickButton(joystick, 4).whenPressed(new ShiftGears(drivetrain));
-		// Left Trigger - Intake
-		new JoystickButton(joystick, 7).whenPressed(new InstantCommand(() -> intake.runIntake(), intake));
-		// Right Trigger - Shooter
-		new JoystickButton(joystick, 8).whenPressed(new InstantCommand(() -> shooter.shooterPeriodic(), shooter));
+		// Triangle - Intake
+		new JoystickButton(joystick, 4).whenPressed(new InstantCommand(() -> intake.runIntake(), intake));
+		// X - Shift Gears
+		new JoystickButton(joystick, 2).whenPressed(new ShiftGears(drivetrain));
+		// Right Trigger - Index
+		new JoystickButton(joystick, 8).whenPressed(new InstantCommand(() -> intake.runIndexer(), intake));
+		// Left Trigger - Shooter
+		new JoystickButton(joystick, 7).whenPressed(new InstantCommand(() -> shooter.shoot(), shooter));
+		// Left Trigger - Shooter
+		new JoystickButton(joystick, 3).whenPressed(new InstantCommand(() -> intake.reverse(), shooter));
 		// Share - Color Sensor
-		// D-pad??????????????????
 		new JoystickButton(joystick, 9).whenPressed(new InstantCommand(
-			() -> colorsensor.spin(), colorsensor));
-
+			() -> colorsensor.spinToColor(), colorsensor));
+			// Share - Color Sensor
+		new JoystickButton(joystick, 9).whenPressed(new InstantCommand(
+			() -> colorsensor.spinFourTimes(), colorsensor));
+		// Left Bumper - Spin Wheel Left
+		new JoystickButton(joystick, 5).whenPressed(new InstantCommand(
+			() -> colorsensor.spinLeft(), colorsensor));
+		// Right Bumper - Spin Wheel Right
+		new JoystickButton(joystick, 6).whenPressed(new InstantCommand(
+			() -> colorsensor.spinRight(), colorsensor));
 		/**
 		 * POV Functionality
 		 * For reference:
@@ -98,7 +107,7 @@ public class RobotContainer {
 	private void configureDefaultCommands() {
 		drivetrain.setDefaultCommand(pidTankDrive);
 		colorsensor.setDefaultCommand(colorSensor);
-		shooter.setDefaultCommand(testShooter);
+		//shooter.setDefaultCommand(testShooter);
 	}
 
 	/**

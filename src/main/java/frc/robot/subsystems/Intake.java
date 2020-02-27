@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Spark;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DigitalInput;
-import com.revrobotics.CANDigitalInput.LimitSwitchPolarity;
-
 
 public class Intake extends SubsystemBase {
   private Spark m_intake, m_indexer;
@@ -21,7 +19,7 @@ public class Intake extends SubsystemBase {
    * Creates a new Intake.
    */
   public Intake() {
-	m_intake = new Spark(Constants.Intake.kmIntake);
+	//m_intake = new Spark(Constants.Intake.kmIntake);
 	m_indexer = new Spark(Constants.Intake.kmIndexer);
 	m_limitSwitch = new DigitalInput(1);
   }
@@ -39,6 +37,9 @@ public class Intake extends SubsystemBase {
 	  }
   }
 
+  public void reverse() {
+	m_indexer.set(-0.5);
+	}
   /**
    * EXPERIMENTAL:
    * Stops the indexer motor.
