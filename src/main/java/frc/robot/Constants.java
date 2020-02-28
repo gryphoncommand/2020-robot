@@ -49,13 +49,13 @@ public final class Constants {
 		public static final double kTankInputFactor = 0.25;
 		public static final double kDistancePerPulse = 1.86e-5;
 
-		public static final SparkMaxConfig kConfig = new SparkMaxConfig();
-		static {
-			kDriveMotorConfig.OPEN_LOOP_RAMP_RATE = 0.0;
-			kDriveMotorConfig.CLOSED_LOOP_RAMP_RATE = 0.0;
-			kDriveMotorConfig.IDLE_MODE = IdleMode.kCoast;
-			kDriveMotorConfig.INVERTED = false;
-		}
+		// public static final SparkMaxConfig kConfig = new SparkMaxConfig();
+		// static {
+		// 	kDriveMotorConfig.OPEN_LOOP_RAMP_RATE = 0.0;
+		// 	kDriveMotorConfig.CLOSED_LOOP_RAMP_RATE = 0.0;
+		// 	kDriveMotorConfig.IDLE_MODE = IdleMode.kCoast;
+		// 	kDriveMotorConfig.INVERTED = false;
+		// }
 		public static final PIDControllerConfig kPIDConfig = new PIDControllerConfig();
 		static {
 			kPIDConfig.P = 0.1;
