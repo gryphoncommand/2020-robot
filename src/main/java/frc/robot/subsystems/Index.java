@@ -9,29 +9,40 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Spark;
-import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.Constants;
+public class Index extends SubsystemBase {
+  /**
+   * Creates a new Index.
+   */
+  private Spark m_indexer;
+  private DigitalInput m_limitSwitch;
 
-public class Intake extends SubsystemBase {
-  private Spark m_intake;
-  /**
-   * Creates a new Intake.
-   */
-  public Intake() {
-	m_intake = new Spark(Constants.Intake.kmIntake);
+  public Index() {
+	m_indexer = new Spark(Constants.Intake.kmIndexer);
+	m_limitSwitch = new DigitalInput(1);
   }
-  /**
-   * EXPERIMENTAL:
-   * Runs the intake motor at a static speed.
-   * Motor alignment has not yet been determined.
-   */
-  public void runIntake() {
-	m_intake.set(1);
-	
-	
-}
-	public void stopIntake() {
-		m_intake.set(0);
+  public void reverse() {
+	m_indexer.set(-1);
+	}
+	/**
+	 * EXPERIMENTAL:
+	 * Stops the indexer motor.
+	 * Motor alignment has not yet been determined.
+	 */
+  	public void stopIndexer() {
+	m_indexer.set(0.0);
+	}
+	/**
+	 * EXPERIMENTAL:
+	 * Runs the indexer motor at a static speed.
+	 * Motor alignment has not yet been determined.
+	 */
+	public void runIndexer() {
+		if (m_limitSwitch.get()) {
+			stopIndexer();
+		}
+		m_indexer.set(1);
 	}
   @Override
   public void periodic() {

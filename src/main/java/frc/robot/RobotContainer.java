@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ShiftGears;
 import frc.robot.subsystems.ColorSpinner;
 import frc.robot.subsystems.ComplexDrivetrain;
+import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -37,6 +38,7 @@ public class RobotContainer {
 	// public static ColorSpinner colorsensor = new ColorSpinner();
 	public static Shooter shooter = new Shooter();
 	public static Intake intake = new Intake();
+	public static Index index = new Index();
 	public static Climber climber = new Climber();
 
 	// Controllers
@@ -48,24 +50,25 @@ public class RobotContainer {
 	// Command
 	private RunCommand pidTankDrive = new RunCommand(
 			() -> drivetrain.pidTankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
-	private RunCommand runIndexer = new RunCommand(()-> {
-		if(circle.get()) {
-			intake.reverse();
-		} else {
-			intake.stopIndexer();
-		}
-		if(rightTrigger.get()) {
-			intake.runIndexer();
-		} else {
-			intake.stopIndexer();
-		}
+	private RunCommand runIntake = new RunCommand(()-> {
 		if(triangle.get()) {
 			intake.runIntake();
 		} else {
 			intake.stopIntake();
 		}
 	}, intake);
-
+	private RunCommand runIndexer = new RunCommand(()-> {
+		if(circle.get()) {
+			index.reverse();
+		} else {
+			index.stopIndexer();
+		}
+		if(rightTrigger.get()) {
+			index.runIndexer();
+		} else {
+			index.stopIndexer();
+		}
+	}, index);
 	private RunCommand runShooter = new RunCommand(()-> {
 		if(leftTrigger.get()) {
 			shooter.shoot();
@@ -148,7 +151,8 @@ public class RobotContainer {
 		drivetrain.setDefaultCommand(pidTankDrive);
 		// colorsensor.setDefaultCommand(colorSensor);
 		shooter.setDefaultCommand(runShooter);
-		intake.setDefaultCommand(runIndexer);
+		intake.setDefaultCommand(runIntake);
+		index.setDefaultCommand(runIndexer);
 		climber.setDefaultCommand(runClimber);
 	}
 
