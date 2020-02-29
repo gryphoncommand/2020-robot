@@ -66,11 +66,11 @@ public final class Constants {
 		}
 	}
 	public static final class Intake {
-		public static final int kmIntake = 5;
+		public static final int kmIntake = 4;
 		public static final int kmIndexer = 0;
 	}
 	public static final class Shooter {
-		public static final int kmShooter = 4;
+		public static final int kmShooter = 5;
 		public static final SparkMaxConfig kConfig = new SparkMaxConfig();
 		static {
 			kConfig.OPEN_LOOP_RAMP_RATE = 0.0;

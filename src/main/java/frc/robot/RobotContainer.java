@@ -17,7 +17,7 @@ import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Shooting;
 // import io.github.oblarg.oblog.annotations.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -36,13 +36,14 @@ public class RobotContainer {
 	// Subsystems
 	public static ComplexDrivetrain drivetrain = new ComplexDrivetrain();
 	// public static ColorSpinner colorsensor = new ColorSpinner();
-	public static Shooter shooter = new Shooter();
+	public static Shooting shooter = new Shooting();
 	public static Intake intake = new Intake();
 	public static Index index = new Index();
 	public static Climber climber = new Climber();
 
 	// Controllers
 	public static Joystick joystick = new Joystick(0);
+	public static JoystickButton square = new JoystickButton(joystick, 1);
 	public static JoystickButton circle = new JoystickButton(joystick, 3);
 	public static JoystickButton triangle = new JoystickButton(joystick, 4);
 	public static JoystickButton leftTrigger = new JoystickButton(joystick, 7);
@@ -69,11 +70,15 @@ public class RobotContainer {
 			index.stopIndexer();
 		}
 	}, index);
+
 	private RunCommand runShooter = new RunCommand(()-> {
 		if(leftTrigger.get()) {
-			shooter.shoot();
+			shooter.shoot(-0.25);
+		} else {
+			shooter.stopShooting();
 		}
 	}, shooter);
+	
 	private POVButton telUp = new POVButton(joystick, 0);
 	private POVButton telDown = new POVButton(joystick, 180);
 	private RunCommand runClimber = new RunCommand(() -> {
