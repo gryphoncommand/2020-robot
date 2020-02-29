@@ -7,6 +7,8 @@
 
 package frc.robot.subsystems;
 
+import frc.lib.utils.PunkSparkMax;
+
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // import io.github.oblarg.oblog.annotations.Log;
@@ -55,7 +57,7 @@ import frc.robot.Constants;
  */
 public class Shooter extends SubsystemBase {
   private static final int deviceID = 1;
-  private CANSparkMax m_motor;
+  private PunkSparkMax m_motor;
   private CANPIDController m_pidController;
   private CANEncoder m_encoder;
   
@@ -63,9 +65,10 @@ public class Shooter extends SubsystemBase {
 
   public Shooter() {
     // initialize motor
-	m_motor = new CANSparkMax(Constants.Shooter.kmShooter, MotorType.kBrushless);
+	m_motor = new PunkSparkMax(Constants.Shooter.kmShooter, Constants.Shooter.kConfig);
   }
 	public void shoot() {
+		System.out.println("Shooting");
 		m_motor.set(0.5);
 	}
 

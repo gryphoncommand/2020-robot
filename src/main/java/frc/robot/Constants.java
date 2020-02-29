@@ -40,10 +40,10 @@ public final class Constants {
 	}
 
 	public static final class Drivetrain {
-		public static final int kmLeftFront = 1;
-		public static final int kmLeftBack = 2;
-		public static final int kmRightFront = 3;
-		public static final int kmRightBack = 4;
+		public static final int kmLeftFront = 2;
+		public static final int kmLeftBack = 4;
+		public static final int kmRightFront = 1;
+		public static final int kmRightBack = 3;
 
 		public static final double kTrackWidth = 0.645668;
 		public static final double kTankInputFactor = 0.25;
@@ -66,11 +66,11 @@ public final class Constants {
 		}
 	}
 	public static final class Intake {
-		public static final int kmIntake = 0;
-		public static final int kmIndexer = 1;
+		public static final int kmIntake = 5;
+		public static final int kmIndexer = 0;
 	}
 	public static final class Shooter {
-		public static final int kmShooter = 5;
+		public static final int kmShooter = 4;
 		public static final SparkMaxConfig kConfig = new SparkMaxConfig();
 		static {
 			kConfig.OPEN_LOOP_RAMP_RATE = 0.0;
@@ -102,6 +102,6 @@ public final class Constants {
 	}
 
 	public static int[] kGearShift = { 0, 1 };
-	public static final int kClimberMotor = 2;
-	public static final int kWenchMotor = 3;
+	public static final int kClimberMotor = 1;
+	public static final int kWenchMotor = 2;
 }

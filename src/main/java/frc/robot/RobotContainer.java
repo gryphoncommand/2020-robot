@@ -34,18 +34,56 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 public class RobotContainer {
 	// Subsystems
 	public static ComplexDrivetrain drivetrain = new ComplexDrivetrain();
-	public static ColorSpinner colorsensor = new ColorSpinner();
+	// public static ColorSpinner colorsensor = new ColorSpinner();
 	public static Shooter shooter = new Shooter();
 	public static Intake intake = new Intake();
 	public static Climber climber = new Climber();
 
 	// Controllers
 	public static Joystick joystick = new Joystick(0);
+	public static JoystickButton circle = new JoystickButton(joystick, 3);
+	public static JoystickButton triangle = new JoystickButton(joystick, 4);
+	public static JoystickButton leftTrigger = new JoystickButton(joystick, 7);
+	public static JoystickButton rightTrigger = new JoystickButton(joystick, 8);
 	// Command
 	private RunCommand pidTankDrive = new RunCommand(
 			() -> drivetrain.pidTankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
-	private RunCommand colorSensor = new RunCommand(
-			() -> colorsensor.periodic(), colorsensor);
+	private RunCommand runIndexer = new RunCommand(()-> {
+		if(circle.get()) {
+			intake.reverse();
+		} else {
+			intake.stopIndexer();
+		}
+		if(rightTrigger.get()) {
+			intake.runIndexer();
+		} else {
+			intake.stopIndexer();
+		}
+		if(triangle.get()) {
+			intake.runIntake();
+		} else {
+			intake.stopIntake();
+		}
+	}, intake);
+
+	private RunCommand runShooter = new RunCommand(()-> {
+		if(leftTrigger.get()) {
+			shooter.shoot();
+		}
+	}, shooter);
+	private POVButton telUp = new POVButton(joystick, 0);
+	private POVButton telDown = new POVButton(joystick, 180);
+	private RunCommand runClimber = new RunCommand(() -> {
+		if(telUp.get()) {
+			climber.moveClimber(1);
+		} else if(telDown.get()) {
+			climber.moveClimber(-1);
+		} else {
+			climber.moveClimber(0);
+		}
+	}, climber);
+	// private RunCommand colorSensor = new RunCommand(
+	// 		() -> colorsensor.periodic(), colorsensor);
 
 	// private RunCommand curvatureDrive = new RunCommand(
 			// () -> drivetrain.curvatureDrive(joystick.getRawAxis(1), joystick.getRawAxis(2)), drivetrain);\
@@ -68,15 +106,16 @@ public class RobotContainer {
 	 */
 	private void configureButtonBindings() {
 		// Triangle - Intake
-		new JoystickButton(joystick, 4).whenPressed(new InstantCommand(() -> intake.runIntake(), intake));
+		// new JoystickButton(joystick, 4).whenPressed(new InstantCommand(() -> intake.runIntake(), intake));
 		// X - Shift Gears
 		new JoystickButton(joystick, 2).whenPressed(new ShiftGears(drivetrain));
 		// Right Trigger - Index
-		new JoystickButton(joystick, 8).whenPressed(new InstantCommand(() -> intake.runIndexer(), intake));
+		// new JoystickButton(joystick, 8).whenPressed(new InstantCommand(() -> intake.runIndexer(), intake));
 		// Left Trigger - Shooter
-		new JoystickButton(joystick, 7).whenPressed(new InstantCommand(() -> shooter.shoot(), shooter));
-		// Left Trigger - Shooter
-		new JoystickButton(joystick, 3).whenPressed(new InstantCommand(() -> intake.reverse(), shooter));
+		// new JoystickButton(joystick, 7).whenPressed(new InstantCommand(() -> shooter.shoot(), shooter));
+		// Circle - Index Reverse
+		// new JoystickButton(joystick, 3).whenPressed(new InstantCommand(() -> intake.reverse(), shooter));
+		/**
 		// Share - Color Sensor
 		new JoystickButton(joystick, 9).whenPressed(new InstantCommand(
 			() -> colorsensor.spinToColor(), colorsensor));
@@ -89,6 +128,7 @@ public class RobotContainer {
 		// Right Bumper - Spin Wheel Right
 		new JoystickButton(joystick, 6).whenPressed(new InstantCommand(
 			() -> colorsensor.spinRight(), colorsensor));
+		 */
 		/**
 		 * POV Functionality
 		 * For reference:
@@ -97,17 +137,19 @@ public class RobotContainer {
 		 * 180 - Down
 		 * 270 - Left
 		 */ 
-		new POVButton(joystick, 0).whenPressed(new InstantCommand(()->climber.moveClimber(0.5), climber));
-		new POVButton(joystick, 180).whenPressed(new InstantCommand(()->climber.moveClimber(-0.5), climber));
-		new POVButton(joystick, 90).whenPressed(new InstantCommand(()->climber.liftBot(0.5), climber));
-		new POVButton(joystick, 270).whenPressed(new InstantCommand(()->climber.liftBot(-0.5), climber));
+		// new POVButton(joystick, 0).whenPressed(new InstantCommand(()->climber.moveClimber(0.5), climber));
+		// new POVButton(joystick, 180).whenPressed(new InstantCommand(()->climber.moveClimber(-0.5), climber));
+		new POVButton(joystick, 90).whenPressed(new InstantCommand(()->climber.liftBot(1), climber));
+		new POVButton(joystick, 270).whenPressed(new InstantCommand(()->climber.liftBot(-1), climber));
 
 	}
 
 	private void configureDefaultCommands() {
 		drivetrain.setDefaultCommand(pidTankDrive);
-		colorsensor.setDefaultCommand(colorSensor);
-		//shooter.setDefaultCommand(testShooter);
+		// colorsensor.setDefaultCommand(colorSensor);
+		shooter.setDefaultCommand(runShooter);
+		intake.setDefaultCommand(runIndexer);
+		climber.setDefaultCommand(runClimber);
 	}
 
 	/**

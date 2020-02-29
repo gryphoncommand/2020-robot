@@ -57,7 +57,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 		m_leftBack = new PunkSparkMax(Constants.Drivetrain.kmLeftBack, Constants.kDriveMotorConfig, m_leftFront);
 		m_rightFront = new PunkSparkMax(Constants.Drivetrain.kmRightFront, Constants.kDriveMotorConfig);
 		m_rightBack = new PunkSparkMax(Constants.Drivetrain.kmRightBack, Constants.kDriveMotorConfig, m_rightFront);
-
+		m_rightFront.setInverted(true);
 		m_left = new SpeedControllerGroup(m_leftFront, m_leftBack);
 		m_right = new SpeedControllerGroup(m_rightFront, m_rightBack);
 

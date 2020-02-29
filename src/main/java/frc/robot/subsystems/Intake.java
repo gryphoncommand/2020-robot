@@ -19,26 +19,14 @@ public class Intake extends SubsystemBase {
    * Creates a new Intake.
    */
   public Intake() {
-	//m_intake = new Spark(Constants.Intake.kmIntake);
+	m_intake = new Spark(Constants.Intake.kmIntake);
 	m_indexer = new Spark(Constants.Intake.kmIndexer);
 	m_limitSwitch = new DigitalInput(1);
   }
 
-  /**
-   * EXPERIMENTAL:
-   * Runs the intake motor at a static speed.
-   * Motor alignment has not yet been determined.
-   */
-  public void runIntake() {
-	  m_intake.set(0.5);
-	  runIndexer();
-	  if (m_limitSwitch.get()) {
-		  stopIndexer();
-	  }
-  }
 
   public void reverse() {
-	m_indexer.set(-0.5);
+	m_indexer.set(-1);
 	}
   /**
    * EXPERIMENTAL:
@@ -55,8 +43,23 @@ public class Intake extends SubsystemBase {
    * Motor alignment has not yet been determined.
    */
   public void runIndexer() {
-	  m_indexer.set(0.5);
+	  m_indexer.set(1);
   }
+  /**
+   * EXPERIMENTAL:
+   * Runs the intake motor at a static speed.
+   * Motor alignment has not yet been determined.
+   */
+  public void runIntake() {
+	m_intake.set(1);
+	runIndexer();
+	if (m_limitSwitch.get()) {
+		stopIndexer();
+	}
+}
+	public void stopIntake() {
+		m_intake.set(0);
+	}
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
