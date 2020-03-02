@@ -54,10 +54,11 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 */
 	public ComplexDrivetrain() {
 		m_leftFront = new PunkSparkMax(Constants.Drivetrain.kmLeftFront, Constants.kDriveMotorConfig);
+		m_rightFront = new PunkSparkMax(Constants.Drivetrain.kmRightFront, Constants.kRightDriveConfig);
 		m_leftBack = new PunkSparkMax(Constants.Drivetrain.kmLeftBack, Constants.kDriveMotorConfig, m_leftFront);
-		m_rightFront = new PunkSparkMax(Constants.Drivetrain.kmRightFront, Constants.kDriveMotorConfig);
-		m_rightBack = new PunkSparkMax(Constants.Drivetrain.kmRightBack, Constants.kDriveMotorConfig, m_rightFront);
+		m_rightBack = new PunkSparkMax(Constants.Drivetrain.kmRightBack, Constants.kRightDriveConfig, m_rightFront);
 		m_rightFront.setInverted(true);
+		m_rightBack.setInverted(true);
 		m_left = new SpeedControllerGroup(m_leftFront, m_leftBack);
 		m_right = new SpeedControllerGroup(m_rightFront, m_rightBack);
 
@@ -74,8 +75,8 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 		m_rightPIDController.setTolerance(0.01, 0.005);
 
 		// m_gearShift = new DoubleSolenoid(Constants.kGearShift[0], Constants.kGearShift[1]);
-		m_leftEncoder = m_leftFront.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
-		m_rightEncoder = m_rightFront.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
+		m_leftEncoder = m_leftBack.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
+		m_rightEncoder = m_rightBack.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
 		m_leftEncoder.setPosition(0);
 		m_rightEncoder.setPosition(0);
 		m_leftPID = m_leftFront.getPIDController();
@@ -87,9 +88,9 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 		// m_leftPID = new PunkPIDController(m_leftFront, Constants.Drivetrain.kPIDConfig, true);
 		// m_rightPID = new PunkPIDController(m_rightFront, Constants.Drivetrain.kPIDConfig, true);
 
-		m_leftPID.setP(0.1);
-		m_leftPID.setI(1e-5);
-		m_leftPID.setD(1);
+		m_leftPID.setP(0.2);
+		m_leftPID.setI(0);
+		m_leftPID.setD(0);
 		m_leftPID.setIZone(0);
 		m_leftPID.setFF(0);
 		m_leftPID.setOutputRange(-1, 1);
@@ -115,8 +116,8 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	public void tankDrive(double lSpeed, double rSpeed) {
 		lSpeed = Constants.Drivetrain.kTankInputFactor * lSpeed;
 		rSpeed = Constants.Drivetrain.kTankInputFactor * rSpeed;
-		m_left.set(lSpeed);
-		m_right.set(rSpeed);
+		m_leftFront.set(lSpeed);
+		m_rightFront.set(rSpeed);
 	}
 
 	/**
@@ -156,6 +157,8 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 		m_rightFront.set(rightOutput * 0.5); // Same as line previous line
 		SmartDashboard.putNumber("Left_Enc", m_leftEncoder.getVelocity());
 		SmartDashboard.putNumber("Right_Enc", m_rightEncoder.getVelocity());
+		SmartDashboard.putNumber("Left_Pos", m_leftEncoder.getPosition());
+		SmartDashboard.putNumber("Right_Pos", m_rightEncoder.getPosition());
 		SmartDashboard.putNumber("left_out", leftOutput);
 		SmartDashboard.putNumber("right_out", rightOutput);
 		SmartDashboard.putNumber("Drivetrain - Left Error", m_leftPIDController.getVelocityError());
@@ -180,13 +183,14 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * @param velocity     How fast you should go (in feet/s)
 	 */
 	public void setVelocity(double lSpeed, double rSpeed) {
+		velocity = (lSpeed * 12) / (Math.PI * 6) / 60;
 		SmartDashboard.putNumber("Left_Enc", m_leftEncoder.getVelocity());
 		SmartDashboard.putNumber("Right_Enc", m_rightEncoder.getVelocity());
 		SmartDashboard.putNumber("Velocity", velocity);
+		SmartDashboard.putNumber("FPS Velocity", ((velocity / 60) * (6 * Math.PI)));
 		SmartDashboard.putNumber("Drivetrain - Left Setpoint", lSpeed);
-		velocity = (velocity * 12) / (Math.PI * 6) / 60;
-		m_leftPID.setReference(lSpeed, ControlType.kVelocity);
-		m_rightPID.setReference(rSpeed, ControlType.kVelocity);
+		m_leftPID.setReference(velocity, ControlType.kVelocity);
+		// m_rightPID.setReference(rSpeed, ControlType.kVelocity);
 	}
 
 	/**

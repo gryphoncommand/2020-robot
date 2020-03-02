@@ -49,8 +49,14 @@ public class RobotContainer {
 	public static JoystickButton leftTrigger = new JoystickButton(joystick, 7);
 	public static JoystickButton rightTrigger = new JoystickButton(joystick, 8);
 	// Command
+	// private RunCommand pidTankDrive = new RunCommand(
+	// 		() -> drivetrain.pidTankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
 	private RunCommand pidTankDrive = new RunCommand(
-			() -> drivetrain.pidTankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
+			() -> drivetrain.tankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
+	// private RunCommand testOnboardPID = new RunCommand(
+	// 	() -> drivetrain.setVelocity(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
+	private RunCommand testOnboardPID = new RunCommand(
+		() -> drivetrain.setVelocity(-1, joystick.getRawAxis(5)), drivetrain);
 	private RunCommand runIntake = new RunCommand(()-> {
 		if(triangle.get()) {
 			intake.runIntake();
@@ -153,7 +159,7 @@ public class RobotContainer {
 	}
 
 	private void configureDefaultCommands() {
-		drivetrain.setDefaultCommand(pidTankDrive);
+		drivetrain.setDefaultCommand(testOnboardPID);
 		// colorsensor.setDefaultCommand(colorSensor);
 		shooter.setDefaultCommand(runShooter);
 		intake.setDefaultCommand(runIntake);

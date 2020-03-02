@@ -31,6 +31,13 @@ public final class Constants {
 		kDriveMotorConfig.IDLE_MODE = IdleMode.kCoast;
 		kDriveMotorConfig.INVERTED = false;
 	}
+	public static final SparkMaxConfig kRightDriveConfig = new SparkMaxConfig();
+	static {
+		kRightDriveConfig.OPEN_LOOP_RAMP_RATE = 0.0;
+		kRightDriveConfig.CLOSED_LOOP_RAMP_RATE = 0.0;
+		kRightDriveConfig.IDLE_MODE = IdleMode.kCoast;
+		kRightDriveConfig.INVERTED = true;
+	}
 
 	public static final class Joystick {
 		public static final int kLeftXAxis = 0;
