@@ -47,7 +47,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 
 	private double[] heading;
 	@Log
-	private double velocity, highest_velocity, lowest_velocity, avgDist;
+	private double velocity, highest_velocity, lowest_velocity, avgDist, lVelocity, rotations;
 
 	/**
 	 * Central class for all drivetrain-related activities.
@@ -118,6 +118,15 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 		rSpeed = Constants.Drivetrain.kTankInputFactor * rSpeed;
 		m_leftFront.set(lSpeed);
 		m_rightFront.set(rSpeed);
+		double speed = 0;
+		double min_speed = 0;
+		if(Math.abs(m_leftEncoder.getVelocity()) > speed) {
+			speed = m_leftEncoder.getVelocity();
+		} else if (Math.abs(m_leftEncoder.getVelocity()) < min_speed) {
+			min_speed = m_leftEncoder.getVelocity();
+		}
+		SmartDashboard.putNumber("Max Speed", speed);
+		SmartDashboard.putNumber("Min Speed", min_speed);
 	}
 
 	/**
@@ -127,7 +136,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * @param zRotation Rotation rate for robot (Clockwise is positive)
 	 */
 	public void curvatureDrive(double xSpeed, double zRotation) {
-		// m_drive.curvatureDrive(xSpeed, zRotation, false);
+		m_drive.curvatureDrive(xSpeed, zRotation, false);
 	}
 
 	/**
@@ -183,14 +192,32 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * @param velocity     How fast you should go (in feet/s)
 	 */
 	public void setVelocity(double lSpeed, double rSpeed) {
-		velocity = (lSpeed * 12) / (Math.PI * 6) / 60;
+		lVelocity = (lSpeed * 12) / (Math.PI * 6) / 60;
+		velocity = (velocity * 12) / (Math.PI * 6) / 60;
 		SmartDashboard.putNumber("Left_Enc", m_leftEncoder.getVelocity());
 		SmartDashboard.putNumber("Right_Enc", m_rightEncoder.getVelocity());
-		SmartDashboard.putNumber("Velocity", velocity);
-		SmartDashboard.putNumber("FPS Velocity", ((velocity / 60) * (6 * Math.PI)));
+		SmartDashboard.putNumber("Velocity", lVelocity);
+		SmartDashboard.putNumber("FPS Velocity", ((lVelocity / 60) * (6 * Math.PI)));
 		SmartDashboard.putNumber("Drivetrain - Left Setpoint", lSpeed);
-		m_leftPID.setReference(velocity, ControlType.kVelocity);
+		m_leftPID.setReference(rotations, ControlType.kVelocity);
 		// m_rightPID.setReference(rSpeed, ControlType.kVelocity);
+	}
+/**
+	 * EXPERIMENTAL: Go to a set speed (in feet per second)
+	 * 
+	 * @param velocity     How fast you should go (in feet/s)
+	 */
+	public void testVelocity(double lSpeed, double rSpeed) {
+		double rot = lSpeed * 5700;
+		double rot2 = rSpeed * 5700;
+		
+		SmartDashboard.putNumber("Left Rotations", rot);
+		SmartDashboard.putNumber("Right Rotations", rot2);
+		SmartDashboard.putNumber("Drivetrain - Left Setpoint", lSpeed);
+		m_leftPID.setReference(rot, ControlType.kVelocity);
+		m_rightPID.setReference(rot2, ControlType.kVelocity);
+		SmartDashboard.putNumber("Left_Enc", m_leftEncoder.getVelocity());
+		SmartDashboard.putNumber("Right_Enc", m_rightEncoder.getVelocity());
 	}
 
 	/**

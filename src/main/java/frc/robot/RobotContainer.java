@@ -48,6 +48,7 @@ public class RobotContainer {
 	public static JoystickButton triangle = new JoystickButton(joystick, 4);
 	public static JoystickButton leftTrigger = new JoystickButton(joystick, 7);
 	public static JoystickButton rightTrigger = new JoystickButton(joystick, 8);
+	public static JoystickButton xbutton = new JoystickButton(joystick, 2);
 	// Command
 	// private RunCommand pidTankDrive = new RunCommand(
 	// 		() -> drivetrain.pidTankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
@@ -79,21 +80,30 @@ public class RobotContainer {
 
 	private RunCommand runShooter = new RunCommand(()-> {
 		if(leftTrigger.get()) {
-			shooter.shoot(-0.25);
+			shooter.shoot(-0.53);
+		} else if (xbutton.get()) {
+			shooter.shoot(0.25);
 		} else {
 			shooter.stopShooting();
 		}
 	}, shooter);
 	
 	private POVButton telUp = new POVButton(joystick, 0);
+	private POVButton telRight = new POVButton(joystick, 90);
 	private POVButton telDown = new POVButton(joystick, 180);
+	private POVButton telLeft = new POVButton(joystick, 270);
 	private RunCommand runClimber = new RunCommand(() -> {
-		if(telUp.get()) {
-			climber.moveClimber(1);
-		} else if(telDown.get()) {
+		if(telLeft.get()) {
 			climber.moveClimber(-1);
+		} else if(telRight.get()) {
+			climber.moveClimber(1);
+		} else if(telUp.get()) {
+			climber.liftBot(-1);
+		} else if(telDown.get()) {
+			climber.liftBot(1);
 		} else {
 			climber.moveClimber(0);
+			climber.liftBot(0);
 		}
 	}, climber);
 	// private RunCommand colorSensor = new RunCommand(
@@ -153,13 +163,13 @@ public class RobotContainer {
 		 */ 
 		// new POVButton(joystick, 0).whenPressed(new InstantCommand(()->climber.moveClimber(0.5), climber));
 		// new POVButton(joystick, 180).whenPressed(new InstantCommand(()->climber.moveClimber(-0.5), climber));
-		new POVButton(joystick, 90).whenPressed(new InstantCommand(()->climber.liftBot(1), climber));
-		new POVButton(joystick, 270).whenPressed(new InstantCommand(()->climber.liftBot(-1), climber));
+		// new POVButton(joystick, 0).whenPressed(new InstantCommand(()->climber.liftBot(1), climber));
+		// new POVButton(joystick, 180).whenPressed(new InstantCommand(()->climber.liftBot(-1), climber));
 
 	}
 
 	private void configureDefaultCommands() {
-		drivetrain.setDefaultCommand(testOnboardPID);
+		drivetrain.setDefaultCommand(pidTankDrive);
 		// colorsensor.setDefaultCommand(colorSensor);
 		shooter.setDefaultCommand(runShooter);
 		intake.setDefaultCommand(runIntake);

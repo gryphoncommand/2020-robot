@@ -25,8 +25,9 @@ public class PunkSparkMax extends CANSparkMax {
 		config = _config;
 		name = "Spark Max #" + deviceId;
 
-		setConfig();
 		restoreFactoryDefaults();
+		setConfig();
+		burnFlash();
 	}
 
 	public PunkSparkMax(int deviceId, SparkMaxConfig _config, CANSparkMax leader) {

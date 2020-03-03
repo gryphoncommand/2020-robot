@@ -20,11 +20,13 @@ public class Shooting extends SubsystemBase {
    */
   public Shooting() {
 	m_shootMotor = new PunkSparkMax(Constants.Shooter.kmShooter, Constants.Shooter.kConfig);
+	
 	m_encoder = m_shootMotor.getEncoder();
   }
 
   public void shoot(double speed) {
 	m_shootMotor.set(speed);
+	System.out.println(speed);
 	System.out.println(m_encoder.getVelocity());
   }
   public void stopShooting() {

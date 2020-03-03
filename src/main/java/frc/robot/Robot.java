@@ -28,7 +28,7 @@ public class Robot extends TimedRobot {
 	private Command m_autonomousCommand;
 
 	private RobotContainer m_robotContainer;
-	private Compressor m_compressor;
+	// private Compressor m_compressor;
 	private PunkLimelight m_limelight;
 	/**
 	 * This function is run when the robot is first started up and should be used
@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
 		// and put our
 		// autonomous chooser on the dashboard.
 		m_robotContainer = new RobotContainer();
-		m_compressor = new Compressor();
+		// m_compressor = new Compressor();
 		m_limelight = new PunkLimelight(0, Constants.kLimelight);
 		Logger.configureLoggingAndConfig(m_robotContainer, false);
 	}
@@ -110,7 +110,7 @@ public class Robot extends TimedRobot {
 		if (m_autonomousCommand != null) {
 			m_autonomousCommand.cancel();
 		}
-		m_compressor.start();
+		// m_compressor.start();
 	}
 
 	/**
