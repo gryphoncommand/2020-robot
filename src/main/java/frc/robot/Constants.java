@@ -53,7 +53,7 @@ public final class Constants {
 		public static final int kmRightBack = 3;
 
 		public static final double kTrackWidth = 0.645668;
-		public static final double kTankInputFactor = 0.25;
+		public static final double kTankInputFactor = 1;
 		public static final double kDistancePerPulse = 1.86e-5;
 
 		// public static final SparkMaxConfig kConfig = new SparkMaxConfig();
@@ -103,9 +103,9 @@ public final class Constants {
 		// Optimal firing distance 
 		public static final double kOptimalTargetDistance = 1.3716;
 		// Proportional distance constant.
-		public static final double kPDistance = 0.0;
+		public static final double kPDistance = 0.2;
 		// Proportional angle constant.
-		public static final double kPAngle = 0.0;
+		public static final double kPAngle = 0.2;
 	}
 
 	public static int[] kGearShift = { 0, 1 };

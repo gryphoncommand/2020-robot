@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
-// import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
@@ -32,7 +32,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 
 	private SpeedControllerGroup m_left, m_right;
 
-	// private final DifferentialDrive m_drive;
+	private final DifferentialDrive m_drive;
 	private final DifferentialDriveKinematics m_kinematics;
 	private final DifferentialDriveOdometry m_odometry;
 
@@ -57,15 +57,15 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 		m_rightFront = new PunkSparkMax(Constants.Drivetrain.kmRightFront, Constants.kRightDriveConfig);
 		m_leftBack = new PunkSparkMax(Constants.Drivetrain.kmLeftBack, Constants.kDriveMotorConfig, m_leftFront);
 		m_rightBack = new PunkSparkMax(Constants.Drivetrain.kmRightBack, Constants.kRightDriveConfig, m_rightFront);
-		m_rightFront.setInverted(true);
-		m_rightBack.setInverted(true);
+		//m_rightFront.setInverted(true);
+		//m_rightBack.setInverted(true);
 		m_left = new SpeedControllerGroup(m_leftFront, m_leftBack);
 		m_right = new SpeedControllerGroup(m_rightFront, m_rightBack);
-
+		m_right.setInverted(true);
 		m_gyro = new PigeonIMU(0);
 		heading = new double[3];
 
-		// m_drive = new DifferentialDrive(m_left, m_right);
+		m_drive = new DifferentialDrive(m_left, m_right);
 		m_kinematics = new DifferentialDriveKinematics(Constants.Drivetrain.kTrackWidth);
 		m_odometry = new DifferentialDriveOdometry(getAngle());
 
@@ -127,6 +127,8 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 		}
 		SmartDashboard.putNumber("Max Speed", speed);
 		SmartDashboard.putNumber("Min Speed", min_speed);
+		SmartDashboard.putNumber("Left_Enc", m_leftEncoder.getVelocity());
+		SmartDashboard.putNumber("Right_Enc", m_rightEncoder.getVelocity());
 	}
 
 	/**
@@ -136,7 +138,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * @param zRotation Rotation rate for robot (Clockwise is positive)
 	 */
 	public void curvatureDrive(double xSpeed, double zRotation) {
-		m_drive.curvatureDrive(xSpeed, zRotation, false);
+		m_drive.curvatureDrive(xSpeed, zRotation * -1, true);
 	}
 
 	/**
@@ -145,8 +147,8 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * @param _speeds Individual speeds of each side.
 	 */
 	public void pidTest(DifferentialDriveWheelSpeeds _speeds) {
-		final double leftOutput = m_leftPIDController.calculate(m_leftEncoder.getVelocity() / 632, _speeds.leftMetersPerSecond);
-		final double rightOutput = m_rightPIDController.calculate(m_rightEncoder.getVelocity() / 632,
+		final double leftOutput = m_leftPIDController.calculate(m_leftEncoder.getVelocity() / 610, _speeds.leftMetersPerSecond);
+		final double rightOutput = m_rightPIDController.calculate(m_rightEncoder.getVelocity() / 610,
 				_speeds.rightMetersPerSecond);
 		m_leftFront.setVoltage(leftOutput);
 		m_rightFront.setVoltage(rightOutput);
@@ -194,12 +196,13 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	public void setVelocity(double lSpeed, double rSpeed) {
 		lVelocity = (lSpeed * 12) / (Math.PI * 6) / 60;
 		velocity = (velocity * 12) / (Math.PI * 6) / 60;
+		lSpeed = lSpeed * 610;
 		SmartDashboard.putNumber("Left_Enc", m_leftEncoder.getVelocity());
 		SmartDashboard.putNumber("Right_Enc", m_rightEncoder.getVelocity());
 		SmartDashboard.putNumber("Velocity", lVelocity);
 		SmartDashboard.putNumber("FPS Velocity", ((lVelocity / 60) * (6 * Math.PI)));
 		SmartDashboard.putNumber("Drivetrain - Left Setpoint", lSpeed);
-		m_leftPID.setReference(rotations, ControlType.kVelocity);
+		m_leftPID.setReference(lSpeed, ControlType.kVelocity);
 		// m_rightPID.setReference(rSpeed, ControlType.kVelocity);
 	}
 /**

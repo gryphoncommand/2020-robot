@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import io.github.oblarg.oblog.Logger;
 import edu.wpi.first.wpilibj.Compressor;
-import frc.lib.utils.PunkLimelight;
 // import frc.robot.Constants;
 
 /**
@@ -29,7 +28,6 @@ public class Robot extends TimedRobot {
 
 	private RobotContainer m_robotContainer;
 	// private Compressor m_compressor;
-	private PunkLimelight m_limelight;
 	/**
 	 * This function is run when the robot is first started up and should be used
 	 * for any initialization code.
@@ -41,7 +39,6 @@ public class Robot extends TimedRobot {
 		// autonomous chooser on the dashboard.
 		m_robotContainer = new RobotContainer();
 		// m_compressor = new Compressor();
-		m_limelight = new PunkLimelight(0, Constants.kLimelight);
 		Logger.configureLoggingAndConfig(m_robotContainer, false);
 	}
 

@@ -21,6 +21,7 @@ import frc.robot.subsystems.Shooting;
 // import io.github.oblarg.oblog.annotations.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.commands.DriveLimelight;
 import frc.robot.commands.DriveToDistance;
 import frc.robot.subsystems.Climber;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
@@ -43,7 +44,6 @@ public class RobotContainer {
 
 	// Controllers
 	public static Joystick joystick = new Joystick(0);
-	public static JoystickButton square = new JoystickButton(joystick, 1);
 	public static JoystickButton circle = new JoystickButton(joystick, 3);
 	public static JoystickButton triangle = new JoystickButton(joystick, 4);
 	public static JoystickButton leftTrigger = new JoystickButton(joystick, 7);
@@ -52,12 +52,14 @@ public class RobotContainer {
 	// Command
 	// private RunCommand pidTankDrive = new RunCommand(
 	// 		() -> drivetrain.pidTankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
-	private RunCommand pidTankDrive = new RunCommand(
-			() -> drivetrain.tankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
+	// private RunCommand pidTankDrive = new RunCommand(
+	// 		() -> drivetrain.tankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
+	// // private RunCommand testOnboardPID = new RunCommand(
+	// // 	() -> drivetrain.setVelocity(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
 	// private RunCommand testOnboardPID = new RunCommand(
-	// 	() -> drivetrain.setVelocity(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
-	private RunCommand testOnboardPID = new RunCommand(
-		() -> drivetrain.setVelocity(-1, joystick.getRawAxis(5)), drivetrain);
+	//  	() -> drivetrain.setVelocity(-1, joystick.getRawAxis(5)), drivetrain);
+	private RunCommand m_curvatureDrive = new RunCommand(
+	 		() -> drivetrain.curvatureDrive(((joystick.getRawAxis(1))/1.5), ((joystick.getRawAxis(2))/1.5)), drivetrain);
 	private RunCommand runIntake = new RunCommand(()-> {
 		if(triangle.get()) {
 			intake.runIntake();
@@ -106,6 +108,7 @@ public class RobotContainer {
 			climber.liftBot(0);
 		}
 	}, climber);
+
 	// private RunCommand colorSensor = new RunCommand(
 	// 		() -> colorsensor.periodic(), colorsensor);
 
@@ -133,6 +136,7 @@ public class RobotContainer {
 		// new JoystickButton(joystick, 4).whenPressed(new InstantCommand(() -> intake.runIntake(), intake));
 		// X - Shift Gears
 		new JoystickButton(joystick, 2).whenPressed(new ShiftGears(drivetrain));
+		new JoystickButton(joystick, 1).whenPressed(new DriveLimelight(drivetrain));
 		// Right Trigger - Index
 		// new JoystickButton(joystick, 8).whenPressed(new InstantCommand(() -> intake.runIndexer(), intake));
 		// Left Trigger - Shooter
@@ -169,7 +173,7 @@ public class RobotContainer {
 	}
 
 	private void configureDefaultCommands() {
-		drivetrain.setDefaultCommand(pidTankDrive);
+		drivetrain.setDefaultCommand(m_curvatureDrive);
 		// colorsensor.setDefaultCommand(colorSensor);
 		shooter.setDefaultCommand(runShooter);
 		intake.setDefaultCommand(runIntake);
