@@ -8,6 +8,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.PIDCommand;
 
 import frc.robot.subsystems.ComplexDrivetrain;
@@ -24,16 +25,19 @@ public class DriveToDistance extends PIDCommand {
 	public DriveToDistance(double distance, ComplexDrivetrain _drivetrain) {
 		super(
 				// The controller that the command will use
-				new PIDController(0.2, 0, 0),
+				new PIDController(0.01, 0, 0),
 				// This should return the measurement
 				_drivetrain::getDistance,
 				// This should return the setpoint (can also be a constant)
 				distance,
 				// This uses the output
 				setPoint -> {
-					_drivetrain.pidTankDrive(setPoint, setPoint);
+					SmartDashboard.putNumber("SetPoint", distance);
+					SmartDashboard.putNumber("Current Distance", _drivetrain.getDistance());
+					SmartDashboard.putNumber("Calculated Speed", setPoint);
+					_drivetrain.tankDrive(setPoint, setPoint);
 				});
-
+		SmartDashboard.putData("Test PID", getController());
 		m_drivetrain = _drivetrain;
 		addRequirements(m_drivetrain);
 		getController().setTolerance(0.01);

@@ -11,7 +11,7 @@ import com.revrobotics.CANPIDController;
 
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
-
+import edu.wpi.first.wpilibj.SlewRateLimiter;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 // import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -79,6 +79,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 		m_rightEncoder = m_rightBack.getAlternateEncoder(AlternateEncoderType.kQuadrature, 8192);
 		m_leftEncoder.setPosition(0);
 		m_rightEncoder.setPosition(0);
+		m_leftEncoder.setInverted(true);
 		m_leftPID = m_leftFront.getPIDController();
 		m_rightPID = m_rightFront.getPIDController();
 		m_leftPID.setFeedbackDevice(m_leftEncoder);
@@ -129,6 +130,8 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 		SmartDashboard.putNumber("Min Speed", min_speed);
 		SmartDashboard.putNumber("Left_Enc", m_leftEncoder.getVelocity());
 		SmartDashboard.putNumber("Right_Enc", m_rightEncoder.getVelocity());
+		SmartDashboard.putNumber("Left_Pos", getLeftDistance());
+		SmartDashboard.putNumber("Right_Pos",  getRightDistance());
 	}
 
 	/**
@@ -137,8 +140,9 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * @param xSpeed    Speed along the x-axis (Forward is positive)
 	 * @param zRotation Rotation rate for robot (Clockwise is positive)
 	 */
+	SlewRateLimiter filter = new SlewRateLimiter(0.9);
 	public void curvatureDrive(double xSpeed, double zRotation) {
-		m_drive.curvatureDrive(xSpeed, zRotation * -1, true);
+		m_drive.curvatureDrive(filter.calculate(xSpeed), zRotation * -1, true);
 	}
 
 	/**
@@ -168,8 +172,8 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 		m_rightFront.set(rightOutput * 0.5); // Same as line previous line
 		SmartDashboard.putNumber("Left_Enc", m_leftEncoder.getVelocity());
 		SmartDashboard.putNumber("Right_Enc", m_rightEncoder.getVelocity());
-		SmartDashboard.putNumber("Left_Pos", m_leftEncoder.getPosition());
-		SmartDashboard.putNumber("Right_Pos", m_rightEncoder.getPosition());
+		// SmartDashboard.putNumber("Left_Pos", m_leftEncoder.getPosition());
+		// SmartDashboard.putNumber("Right_Pos", m_rightEncoder.getPosition());
 		SmartDashboard.putNumber("left_out", leftOutput);
 		SmartDashboard.putNumber("right_out", rightOutput);
 		SmartDashboard.putNumber("Drivetrain - Left Error", m_leftPIDController.getVelocityError());
@@ -279,7 +283,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	}
 
 	/**
-	 * Retrieves the displacement (in meters) on the left side of the drivetrain.
+	 * Retrieves the displacement (in feet) on the left side of the drivetrain.
 	 * 
 	 * @return Left-side displacement
 	 */
@@ -288,7 +292,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	}
 
 	/**
-	 * Retrieves the displacement (in meters) on the right side of the drivetrain.
+	 * Retrieves the displacement (in feet) on the right side of the drivetrain.
 	 * 
 	 * @return Right-side displacement
 	 */
@@ -303,7 +307,8 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * @return Average displacement between each encoder.
 	 */
 	public double getDistance() {
-		avgDist = (getLeftDistance() + getRightDistance()) / 2;
+		avgDist = ((getLeftDistance() + getRightDistance()) / 2);
+		SmartDashboard.putNumber("avgDist", avgDist);
 		return avgDist;
 	}
 

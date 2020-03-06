@@ -11,14 +11,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.Spark;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.DigitalInput;
+import frc.robot.RobotContainer;
 
 public class Intake extends SubsystemBase {
   private Spark m_intake;
-  /**
+  private boolean limitSwitchedPressed = false;
+  /*
    * Creates a new Intake.
    */
   public Intake() {
-	m_intake = new Spark(Constants.Intake.kmIntake);
+	  m_intake = new Spark(Constants.Intake.kmIntake);
   }
   /**
    * EXPERIMENTAL:
@@ -26,9 +28,7 @@ public class Intake extends SubsystemBase {
    * Motor alignment has not yet been determined.
    */
   public void runIntake() {
-	m_intake.set(1);
-	
-	
+  m_intake.set(0.75);
 }
 	public void stopIntake() {
 		m_intake.set(0);

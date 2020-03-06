@@ -7,6 +7,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -16,16 +17,20 @@ import frc.robot.subsystems.ComplexDrivetrain;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.Shooting;
 // import io.github.oblarg.oblog.annotations.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.commands.DriveLimelight;
 import frc.robot.commands.DriveToDistance;
 import frc.robot.subsystems.Climber;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTableEntry;
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -38,47 +43,55 @@ public class RobotContainer {
 	public static ComplexDrivetrain drivetrain = new ComplexDrivetrain();
 	// public static ColorSpinner colorsensor = new ColorSpinner();
 	public static Shooting shooter = new Shooting();
-	public static Intake intake = new Intake();
 	public static Index index = new Index();
-	public static Climber climber = new Climber();
+	public static Intake intake = new Intake();
+	private DigitalInput m_limitSwitch = new DigitalInput(0);
 
+	public static Climber climber = new Climber();
+	private boolean intakeOn = false;
 	// Controllers
 	public static Joystick joystick = new Joystick(0);
 	public static JoystickButton circle = new JoystickButton(joystick, 3);
-	public static JoystickButton triangle = new JoystickButton(joystick, 4);
+	// public static JoystickButton triangle = new JoystickButton(joystick, 4);
 	public static JoystickButton leftTrigger = new JoystickButton(joystick, 7);
 	public static JoystickButton rightTrigger = new JoystickButton(joystick, 8);
 	public static JoystickButton xbutton = new JoystickButton(joystick, 2);
+	public static JoystickButton slowTurn = new JoystickButton(joystick, 12);
 	// Command
 	// private RunCommand pidTankDrive = new RunCommand(
 	// 		() -> drivetrain.pidTankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
-	// private RunCommand pidTankDrive = new RunCommand(
-	// 		() -> drivetrain.tankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
+	private RunCommand pidTankDrive = new RunCommand(
+			() -> drivetrain.tankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
 	// // private RunCommand testOnboardPID = new RunCommand(
 	// // 	() -> drivetrain.setVelocity(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
 	// private RunCommand testOnboardPID = new RunCommand(
 	//  	() -> drivetrain.setVelocity(-1, joystick.getRawAxis(5)), drivetrain);
-	private RunCommand m_curvatureDrive = new RunCommand(
-	 		() -> drivetrain.curvatureDrive(((joystick.getRawAxis(1))/1.5), ((joystick.getRawAxis(2))/1.5)), drivetrain);
-	private RunCommand runIntake = new RunCommand(()-> {
-		if(triangle.get()) {
-			intake.runIntake();
-		} else {
-			intake.stopIntake();
-		}
-	}, intake);
+	private RunCommand m_curvatureDrive = new RunCommand(() -> {
+				 if (slowTurn.get()) {
+				 	drivetrain.curvatureDrive(((joystick.getRawAxis(1))/3), ((joystick.getRawAxis(2))/3));
+				} else {
+					drivetrain.curvatureDrive(((joystick.getRawAxis(1))), ((joystick.getRawAxis(2) / 1.5)));
+				}
+			}, drivetrain);
+	// private RunCommand runIntake = new RunCommand(()-> {
+	// 	if(triangle.get()) {
+	// 		intake.runIntake();
+	// 	} else {
+	// 		intake.stopIntake();
+	// 	}
+	// }, intake);
 	private RunCommand runIndexer = new RunCommand(()-> {
+		rightTrigger.whenReleased(new InstantCommand(()->index.stopIndexer(), index));
 		if(circle.get()) {
 			index.reverse();
-		} else {
-			index.stopIndexer();
 		}
 		if(rightTrigger.get()) {
 			index.runIndexer();
-		} else {
+		} else if (m_limitSwitch.get()) {
 			index.stopIndexer();
 		}
 	}, index);
+	
 
 	private RunCommand runShooter = new RunCommand(()-> {
 		if(leftTrigger.get()) {
@@ -92,8 +105,8 @@ public class RobotContainer {
 	
 	private POVButton telUp = new POVButton(joystick, 0);
 	private POVButton telRight = new POVButton(joystick, 90);
-	private POVButton telDown = new POVButton(joystick, 180);
 	private POVButton telLeft = new POVButton(joystick, 270);
+	
 	private RunCommand runClimber = new RunCommand(() -> {
 		if(telLeft.get()) {
 			climber.moveClimber(-1);
@@ -101,8 +114,6 @@ public class RobotContainer {
 			climber.moveClimber(1);
 		} else if(telUp.get()) {
 			climber.liftBot(-1);
-		} else if(telDown.get()) {
-			climber.liftBot(1);
 		} else {
 			climber.moveClimber(0);
 			climber.liftBot(0);
@@ -134,9 +145,36 @@ public class RobotContainer {
 	private void configureButtonBindings() {
 		// Triangle - Intake
 		// new JoystickButton(joystick, 4).whenPressed(new InstantCommand(() -> intake.runIntake(), intake));
+		// Triangle - Toggle intake
+		new JoystickButton(joystick, 4).whenPressed(new InstantCommand(() -> {
+			if (intakeOn == true) {
+				intake.stopIntake();
+				index.stopIndexer();
+				intakeOn = false;
+			} else {
+				intake.runIntake();
+				index.runIndexer();
+				intakeOn = true;
+			}
+
+		}, intake, index));
 		// X - Shift Gears
 		new JoystickButton(joystick, 2).whenPressed(new ShiftGears(drivetrain));
 		new JoystickButton(joystick, 1).whenPressed(new DriveLimelight(drivetrain));
+		new JoystickButton(joystick, 13).whenPressed(new InstantCommand(()->{
+			NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
+			NetworkTableEntry ledMode = m_limelight.getEntry("ledMode");
+			if(ledMode.getDouble(0) == 0) {
+				ledMode.setDouble(1); // Force OFF
+			} else if(ledMode.getDouble(0) == 1) {
+				ledMode.setDouble(3); // Force ON
+			} else if(ledMode.getDouble(0) == 3) {
+				ledMode.setDouble(1); // Force OFF
+			} else {
+				ledMode.setDouble(1); // Force OFF by default
+			}
+
+		}));
 		// Right Trigger - Index
 		// new JoystickButton(joystick, 8).whenPressed(new InstantCommand(() -> intake.runIndexer(), intake));
 		// Left Trigger - Shooter
@@ -176,9 +214,11 @@ public class RobotContainer {
 		drivetrain.setDefaultCommand(m_curvatureDrive);
 		// colorsensor.setDefaultCommand(colorSensor);
 		shooter.setDefaultCommand(runShooter);
-		intake.setDefaultCommand(runIntake);
+		// intake.setDefaultCommand(runBoth);
 		index.setDefaultCommand(runIndexer);
 		climber.setDefaultCommand(runClimber);
+		
+
 	}
 
 	/**
@@ -188,7 +228,22 @@ public class RobotContainer {
 	 */
 
 	public Command getAutonomousCommand() { 
-		return new DriveToDistance(-2, drivetrain);
+		// return new DriveToDistance(2, drivetrain);
+		/* AUTO STUFF */
+		return new SequentialCommandGroup(
+			new ParallelCommandGroup(
+				new RunCommand(()-> {shooter.shoot(-0.53);}, shooter), 
+				new RunCommand(()-> {index.runIndexer();}, index)).withTimeout(13), 
+			new RunCommand(()->{
+				drivetrain.tankDrive(-0.25, -0.25);
+			}, drivetrain).withTimeout(1)).withTimeout(15);
+		
+		// return new RunCommand(()->{
+		// 	shooter.shoot(0.53);
+		// }, shooter).withTimeout(5);
+		// return new RunCommand(()->{
+		// 	drivetrain.tankDrive(0.5, 0.5);
+		// }, drivetrain).withTimeout(5);
 	}
 	
 }
