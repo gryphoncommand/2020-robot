@@ -28,7 +28,7 @@ public class Index extends SubsystemBase {
 	 * Motor alignment has not yet been determined.
 	 */
   	public void stopIndexer() {
-	m_indexer.set(0.0);
+		m_indexer.set(0.0);
 	}
 	/**
 	 * EXPERIMENTAL:

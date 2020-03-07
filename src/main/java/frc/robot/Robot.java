@@ -12,6 +12,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import io.github.oblarg.oblog.Logger;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Compressor;
 // import frc.robot.Constants;
 
@@ -28,6 +31,8 @@ public class Robot extends TimedRobot {
 
 	private RobotContainer m_robotContainer;
 	private Compressor m_compressor;
+	private NetworkTable m_limelight;
+	private NetworkTableEntry m_pipeline;
 	/**
 	 * This function is run when the robot is first started up and should be used
 	 * for any initialization code.
@@ -37,6 +42,9 @@ public class Robot extends TimedRobot {
 		// Instantiate our RobotContainer. This will perform all our button bindings,
 		// and put our
 		// autonomous chooser on the dashboard.
+		m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
+		m_pipeline = m_limelight.getEntry("pipeline");
+		m_pipeline.setNumber(1);
 		m_robotContainer = new RobotContainer();
 		m_compressor = new Compressor();
 		Logger.configureLoggingAndConfig(m_robotContainer, false);

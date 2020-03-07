@@ -45,7 +45,7 @@ public class RobotContainer {
 	public static Shooting shooter = new Shooting();
 	public static Index index = new Index();
 	public static Intake intake = new Intake();
-	private DigitalInput m_limitSwitch = new DigitalInput(0);
+	private DigitalInput m_limitSwitch = new DigitalInput(1);
 
 	public static Climber climber = new Climber();
 	private boolean intakeOn = false;
@@ -70,7 +70,7 @@ public class RobotContainer {
 				 if (slowTurn.get()) {
 				 	drivetrain.curvatureDrive(((joystick.getRawAxis(1))/3), ((joystick.getRawAxis(2))/3));
 				} else {
-					drivetrain.curvatureDrive(((joystick.getRawAxis(1))), ((joystick.getRawAxis(2) / 1.5)));
+					drivetrain.curvatureDrive(((joystick.getRawAxis(1))/1.2), ((joystick.getRawAxis(2) / 1.5)));
 				}
 			}, drivetrain);
 	// private RunCommand runIntake = new RunCommand(()-> {
@@ -153,7 +153,7 @@ public class RobotContainer {
 				intakeOn = false;
 			} else {
 				intake.runIntake();
-				index.runIndexer();
+				// index.runIndexer();
 				intakeOn = true;
 			}
 
@@ -232,8 +232,8 @@ public class RobotContainer {
 		/* AUTO STUFF */
 		return new SequentialCommandGroup(
 			new ParallelCommandGroup(
-				new RunCommand(()-> {shooter.shoot(-0.53);}, shooter), 
-				new RunCommand(()-> {index.runIndexer();}, index)).withTimeout(13), 
+				new RunCommand(()-> {shooter.shoot(-0.54);}, shooter), 
+				new RunCommand(()-> {index.runIndexer();}, index)).withTimeout(10), 
 			new RunCommand(()->{
 				drivetrain.tankDrive(-0.25, -0.25);
 			}, drivetrain).withTimeout(1)).withTimeout(15);
