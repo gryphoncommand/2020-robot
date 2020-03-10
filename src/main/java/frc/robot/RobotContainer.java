@@ -70,7 +70,7 @@ public class RobotContainer {
 		if (slowTurn.get()) {
 			drivetrain.curvatureDrive(((joystick.getRawAxis(1)) / 3), ((joystick.getRawAxis(2)) / 3));
 		} else {
-			drivetrain.curvatureDrive(((joystick.getRawAxis(1)) / 1.2), ((joystick.getRawAxis(2) / 1.5)));
+			drivetrain.curvatureDrive(((joystick.getRawAxis(1))/1.01), ((joystick.getRawAxis(2) / 1.5)));
 		}
 	}, drivetrain);
 	// private RunCommand runIntake = new RunCommand(()-> {

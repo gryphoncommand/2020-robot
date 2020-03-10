@@ -140,7 +140,7 @@ public class ComplexDrivetrain extends SubsystemBase implements Loggable {
 	 * @param xSpeed    Speed along the x-axis (Forward is positive)
 	 * @param zRotation Rotation rate for robot (Clockwise is positive)
 	 */
-	SlewRateLimiter filter = new SlewRateLimiter(0.9);
+	SlewRateLimiter filter = new SlewRateLimiter(30);
 	public void curvatureDrive(double xSpeed, double zRotation) {
 		m_drive.curvatureDrive(filter.calculate(xSpeed), zRotation * -1, true);
 	}
