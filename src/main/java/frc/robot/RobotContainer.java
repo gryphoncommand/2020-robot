@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.ShiftGears;
-import frc.robot.subsystems.ColorSpinner;
 import frc.robot.subsystems.ComplexDrivetrain;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
@@ -20,7 +19,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.Shooting;
-// import io.github.oblarg.oblog.annotations.Log;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -31,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableEntry;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a "declarative" paradigm, very little robot logic should
@@ -41,7 +40,6 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 public class RobotContainer {
 	// Subsystems
 	public static ComplexDrivetrain drivetrain = new ComplexDrivetrain();
-	// public static ColorSpinner colorsensor = new ColorSpinner();
 	public static Shooting shooter = new Shooting();
 	public static Index index = new Index();
 	public static Intake intake = new Intake();
@@ -52,49 +50,50 @@ public class RobotContainer {
 	// Controllers
 	public static Joystick joystick = new Joystick(0);
 	public static JoystickButton circle = new JoystickButton(joystick, 3);
-	// public static JoystickButton triangle = new JoystickButton(joystick, 4);
 	public static JoystickButton leftTrigger = new JoystickButton(joystick, 7);
 	public static JoystickButton rightTrigger = new JoystickButton(joystick, 8);
 	public static JoystickButton xbutton = new JoystickButton(joystick, 2);
 	public static JoystickButton slowTurn = new JoystickButton(joystick, 12);
+
 	// Command
 	// private RunCommand pidTankDrive = new RunCommand(
-	// 		() -> drivetrain.pidTankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
+	// () -> drivetrain.pidTankDrive(joystick.getRawAxis(1),
+	// joystick.getRawAxis(5)), drivetrain);
 	private RunCommand pidTankDrive = new RunCommand(
 			() -> drivetrain.tankDrive(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
 	// // private RunCommand testOnboardPID = new RunCommand(
-	// // 	() -> drivetrain.setVelocity(joystick.getRawAxis(1), joystick.getRawAxis(5)), drivetrain);
+	// // () -> drivetrain.setVelocity(joystick.getRawAxis(1),
+	// joystick.getRawAxis(5)), drivetrain);
 	// private RunCommand testOnboardPID = new RunCommand(
-	//  	() -> drivetrain.setVelocity(-1, joystick.getRawAxis(5)), drivetrain);
+	// () -> drivetrain.setVelocity(-1, joystick.getRawAxis(5)), drivetrain);
 	private RunCommand m_curvatureDrive = new RunCommand(() -> {
-				 if (slowTurn.get()) {
-				 	drivetrain.curvatureDrive(((joystick.getRawAxis(1))/3), ((joystick.getRawAxis(2))/3));
-				} else {
-					drivetrain.curvatureDrive(((joystick.getRawAxis(1))/1.2), ((joystick.getRawAxis(2) / 1.5)));
-				}
-			}, drivetrain);
+		if (slowTurn.get()) {
+			drivetrain.curvatureDrive(((joystick.getRawAxis(1)) / 3), ((joystick.getRawAxis(2)) / 3));
+		} else {
+			drivetrain.curvatureDrive(((joystick.getRawAxis(1)) / 1.2), ((joystick.getRawAxis(2) / 1.5)));
+		}
+	}, drivetrain);
 	// private RunCommand runIntake = new RunCommand(()-> {
-	// 	if(triangle.get()) {
-	// 		intake.runIntake();
-	// 	} else {
-	// 		intake.stopIntake();
-	// 	}
+	// if(triangle.get()) {
+	// intake.runIntake();
+	// } else {
+	// intake.stopIntake();
+	// }
 	// }, intake);
-	private RunCommand runIndexer = new RunCommand(()-> {
-		rightTrigger.whenReleased(new InstantCommand(()->index.stopIndexer(), index));
-		if(circle.get()) {
+	private RunCommand runIndexer = new RunCommand(() -> {
+		rightTrigger.whenReleased(new InstantCommand(() -> index.stopIndexer(), index));
+		if (circle.get()) {
 			index.reverse();
 		}
-		if(rightTrigger.get()) {
+		if (rightTrigger.get()) {
 			index.runIndexer();
 		} else if (m_limitSwitch.get()) {
 			index.stopIndexer();
 		}
 	}, index);
-	
 
-	private RunCommand runShooter = new RunCommand(()-> {
-		if(leftTrigger.get()) {
+	private RunCommand runShooter = new RunCommand(() -> {
+		if (leftTrigger.get()) {
 			shooter.shoot(-0.53);
 		} else if (xbutton.get()) {
 			shooter.shoot(0.25);
@@ -102,17 +101,17 @@ public class RobotContainer {
 			shooter.stopShooting();
 		}
 	}, shooter);
-	
+
 	private POVButton telUp = new POVButton(joystick, 0);
 	private POVButton telRight = new POVButton(joystick, 90);
 	private POVButton telLeft = new POVButton(joystick, 270);
-	
+
 	private RunCommand runClimber = new RunCommand(() -> {
-		if(telLeft.get()) {
+		if (telLeft.get()) {
 			climber.moveClimber(-1);
-		} else if(telRight.get()) {
+		} else if (telRight.get()) {
 			climber.moveClimber(1);
-		} else if(telUp.get()) {
+		} else if (telUp.get()) {
 			climber.liftBot(-1);
 		} else {
 			climber.moveClimber(0);
@@ -120,13 +119,6 @@ public class RobotContainer {
 		}
 	}, climber);
 
-	// private RunCommand colorSensor = new RunCommand(
-	// 		() -> colorsensor.periodic(), colorsensor);
-
-	// private RunCommand curvatureDrive = new RunCommand(
-			// () -> drivetrain.curvatureDrive(joystick.getRawAxis(1), joystick.getRawAxis(2)), drivetrain);\
-	// FOR TESTING PURPOSES ONLY - Runs the shooter based off of the SmartDashboard
-	//private RunCommand testShooter = new RunCommand(() -> shooter.shooterPeriodic(), shooter);
 	/**
 	 * The container for the robot. Contains subsystems, OI devices, and commands.
 	 */
@@ -144,7 +136,8 @@ public class RobotContainer {
 	 */
 	private void configureButtonBindings() {
 		// Triangle - Intake
-		// new JoystickButton(joystick, 4).whenPressed(new InstantCommand(() -> intake.runIntake(), intake));
+		// new JoystickButton(joystick, 4).whenPressed(new InstantCommand(() ->
+		// intake.runIntake(), intake));
 		// Triangle - Toggle intake
 		new JoystickButton(joystick, 4).whenPressed(new InstantCommand(() -> {
 			if (intakeOn == true) {
@@ -161,14 +154,14 @@ public class RobotContainer {
 		// X - Shift Gears
 		new JoystickButton(joystick, 2).whenPressed(new ShiftGears(drivetrain));
 		new JoystickButton(joystick, 1).whenPressed(new DriveLimelight(drivetrain));
-		new JoystickButton(joystick, 13).whenPressed(new InstantCommand(()->{
+		new JoystickButton(joystick, 13).whenPressed(new InstantCommand(() -> {
 			NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
 			NetworkTableEntry ledMode = m_limelight.getEntry("ledMode");
-			if(ledMode.getDouble(0) == 0) {
+			if (ledMode.getDouble(0) == 0) {
 				ledMode.setDouble(1); // Force OFF
-			} else if(ledMode.getDouble(0) == 1) {
+			} else if (ledMode.getDouble(0) == 1) {
 				ledMode.setDouble(3); // Force ON
-			} else if(ledMode.getDouble(0) == 3) {
+			} else if (ledMode.getDouble(0) == 3) {
 				ledMode.setDouble(1); // Force OFF
 			} else {
 				ledMode.setDouble(1); // Force OFF by default
@@ -176,37 +169,35 @@ public class RobotContainer {
 
 		}));
 		// Right Trigger - Index
-		// new JoystickButton(joystick, 8).whenPressed(new InstantCommand(() -> intake.runIndexer(), intake));
+		// new JoystickButton(joystick, 8).whenPressed(new InstantCommand(() ->
+		// intake.runIndexer(), intake));
 		// Left Trigger - Shooter
-		// new JoystickButton(joystick, 7).whenPressed(new InstantCommand(() -> shooter.shoot(), shooter));
+		// new JoystickButton(joystick, 7).whenPressed(new InstantCommand(() ->
+		// shooter.shoot(), shooter));
 		// Circle - Index Reverse
-		// new JoystickButton(joystick, 3).whenPressed(new InstantCommand(() -> intake.reverse(), shooter));
+		// new JoystickButton(joystick, 3).whenPressed(new InstantCommand(() ->
+		// intake.reverse(), shooter));
 		/**
-		// Share - Color Sensor
-		new JoystickButton(joystick, 9).whenPressed(new InstantCommand(
-			() -> colorsensor.spinToColor(), colorsensor));
-			// Share - Color Sensor
-		new JoystickButton(joystick, 9).whenPressed(new InstantCommand(
-			() -> colorsensor.spinFourTimes(), colorsensor));
-		// Left Bumper - Spin Wheel Left
-		new JoystickButton(joystick, 5).whenPressed(new InstantCommand(
-			() -> colorsensor.spinLeft(), colorsensor));
-		// Right Bumper - Spin Wheel Right
-		new JoystickButton(joystick, 6).whenPressed(new InstantCommand(
-			() -> colorsensor.spinRight(), colorsensor));
+		 * // Share - Color Sensor new JoystickButton(joystick, 9).whenPressed(new
+		 * InstantCommand( () -> colorsensor.spinToColor(), colorsensor)); // Share -
+		 * Color Sensor new JoystickButton(joystick, 9).whenPressed(new InstantCommand(
+		 * () -> colorsensor.spinFourTimes(), colorsensor)); // Left Bumper - Spin Wheel
+		 * Left new JoystickButton(joystick, 5).whenPressed(new InstantCommand( () ->
+		 * colorsensor.spinLeft(), colorsensor)); // Right Bumper - Spin Wheel Right new
+		 * JoystickButton(joystick, 6).whenPressed(new InstantCommand( () ->
+		 * colorsensor.spinRight(), colorsensor));
 		 */
 		/**
-		 * POV Functionality
-		 * For reference:
-		 * 0 - Up
-		 * 90 - Right
-		 * 180 - Down
-		 * 270 - Left
-		 */ 
-		// new POVButton(joystick, 0).whenPressed(new InstantCommand(()->climber.moveClimber(0.5), climber));
-		// new POVButton(joystick, 180).whenPressed(new InstantCommand(()->climber.moveClimber(-0.5), climber));
-		// new POVButton(joystick, 0).whenPressed(new InstantCommand(()->climber.liftBot(1), climber));
-		// new POVButton(joystick, 180).whenPressed(new InstantCommand(()->climber.liftBot(-1), climber));
+		 * POV Functionality For reference: 0 - Up 90 - Right 180 - Down 270 - Left
+		 */
+		// new POVButton(joystick, 0).whenPressed(new
+		// InstantCommand(()->climber.moveClimber(0.5), climber));
+		// new POVButton(joystick, 180).whenPressed(new
+		// InstantCommand(()->climber.moveClimber(-0.5), climber));
+		// new POVButton(joystick, 0).whenPressed(new
+		// InstantCommand(()->climber.liftBot(1), climber));
+		// new POVButton(joystick, 180).whenPressed(new
+		// InstantCommand(()->climber.liftBot(-1), climber));
 
 	}
 
@@ -217,7 +208,6 @@ public class RobotContainer {
 		// intake.setDefaultCommand(runBoth);
 		index.setDefaultCommand(runIndexer);
 		climber.setDefaultCommand(runClimber);
-		
 
 	}
 
@@ -227,23 +217,23 @@ public class RobotContainer {
 	 * @return the command to run in autonomous
 	 */
 
-	public Command getAutonomousCommand() { 
+	public Command getAutonomousCommand() {
 		// return new DriveToDistance(2, drivetrain);
 		/* AUTO STUFF */
-		return new SequentialCommandGroup(
-			new ParallelCommandGroup(
-				new RunCommand(()-> {shooter.shoot(-0.54);}, shooter), 
-				new RunCommand(()-> {index.runIndexer();}, index)).withTimeout(10), 
-			new RunCommand(()->{
-				drivetrain.tankDrive(-0.25, -0.25);
-			}, drivetrain).withTimeout(1)).withTimeout(15);
-		
+		return new SequentialCommandGroup(new ParallelCommandGroup(new RunCommand(() -> {
+			shooter.shoot(-0.54);
+		}, shooter), new RunCommand(() -> {
+			index.runIndexer();
+		}, index)).withTimeout(10), new RunCommand(() -> {
+			drivetrain.tankDrive(-0.25, -0.25);
+		}, drivetrain).withTimeout(1)).withTimeout(15);
+
 		// return new RunCommand(()->{
-		// 	shooter.shoot(0.53);
+		// shooter.shoot(0.53);
 		// }, shooter).withTimeout(5);
 		// return new RunCommand(()->{
-		// 	drivetrain.tankDrive(0.5, 0.5);
+		// drivetrain.tankDrive(0.5, 0.5);
 		// }, drivetrain).withTimeout(5);
 	}
-	
+
 }
