@@ -17,6 +17,7 @@ import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.Shooting;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,6 +30,8 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableEntry;
+import frc.robot.commands.DriveToDistance;
+import frc.robot.commands.DriveLimelight;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -54,6 +57,9 @@ public class RobotContainer {
 	public static JoystickButton rightTrigger = new JoystickButton(joystick, 8);
 	public static JoystickButton xbutton = new JoystickButton(joystick, 2);
 	public static JoystickButton slowTurn = new JoystickButton(joystick, 12);
+	// public static DriveToDistance driveToDistance = new DriveToDistance(10,
+	// drivetrain);
+	public static DriveLimelight driveLimelight = new DriveLimelight(drivetrain);
 
 	// Command
 	// private RunCommand pidTankDrive = new RunCommand(
@@ -153,7 +159,11 @@ public class RobotContainer {
 		}, intake, index));
 		// X - Shift Gears
 		new JoystickButton(joystick, 2).whenPressed(new ShiftGears(drivetrain));
-		new JoystickButton(joystick, 1).whenPressed(new DriveLimelight(drivetrain));
+		//Target - BUTTON->
+		new JoystickButton(joystick, 1).whenPressed(new RunCommand(() -> {
+			driveLimelight.execute();
+		}, drivetrain).withTimeout(3));
+		// Togle lights - BUTTON->
 		new JoystickButton(joystick, 13).whenPressed(new InstantCommand(() -> {
 			NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
 			NetworkTableEntry ledMode = m_limelight.getEntry("ledMode");
@@ -227,7 +237,7 @@ public class RobotContainer {
 		}, index)).withTimeout(10), new RunCommand(() -> {
 			drivetrain.tankDrive(-0.25, -0.25);
 		}, drivetrain).withTimeout(1)).withTimeout(15);
-
+		
 		// return new RunCommand(()->{
 		// shooter.shoot(0.53);
 		// }, shooter).withTimeout(5);
