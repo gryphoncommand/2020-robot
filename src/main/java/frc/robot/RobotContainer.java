@@ -31,7 +31,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import frc.robot.commands.DriveToDistance;
-import frc.robot.commands.DriveLimelight;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -100,9 +99,9 @@ public class RobotContainer {
 
 	private RunCommand runShooter = new RunCommand(() -> {
 		if (leftTrigger.get()) {
-			shooter.shoot(-0.53);
+			shooter.shoot(-0.75);
 		} else if (xbutton.get()) {
-			shooter.shoot(0.25);
+			shooter.shootLimeLight();
 		} else {
 			shooter.stopShooting();
 		}
@@ -159,10 +158,11 @@ public class RobotContainer {
 		}, intake, index));
 		// X - Shift Gears
 		new JoystickButton(joystick, 2).whenPressed(new ShiftGears(drivetrain));
-		//Target - BUTTON->
-		new JoystickButton(joystick, 1).whenPressed(new RunCommand(() -> {
+		//A (on Xbox) - BUTTON->
+		new JoystickButton(joystick, 3).whenPressed(new RunCommand(() -> {
 			driveLimelight.execute();
-		}, drivetrain).withTimeout(3));
+		}, drivetrain));
+		
 		// Togle lights - BUTTON->
 		new JoystickButton(joystick, 13).whenPressed(new InstantCommand(() -> {
 			NetworkTable m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
@@ -212,7 +212,7 @@ public class RobotContainer {
 	}
 
 	private void configureDefaultCommands() {
-		drivetrain.setDefaultCommand(m_curvatureDrive);
+		// drivetrain.setDefaultCommand(m_curvatureDrive);
 		// colorsensor.setDefaultCommand(colorSensor);
 		shooter.setDefaultCommand(runShooter);
 		// intake.setDefaultCommand(runBoth);

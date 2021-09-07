@@ -16,6 +16,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Compressor;
+import frc.robot.commands.DriveLimelight;
 // import frc.robot.Constants;
 
 /**
@@ -33,6 +34,7 @@ public class Robot extends TimedRobot {
 	private Compressor m_compressor;
 	private NetworkTable m_limelight;
 	private NetworkTableEntry m_pipeline;
+
 	/**
 	 * This function is run when the robot is first started up and should be used
 	 * for any initialization code.
@@ -44,7 +46,7 @@ public class Robot extends TimedRobot {
 		// autonomous chooser on the dashboard.
 		m_limelight = NetworkTableInstance.getDefault().getTable("limelight");
 		m_pipeline = m_limelight.getEntry("pipeline");
-		m_pipeline.setNumber(1);
+		m_pipeline.setNumber(2);
 		m_robotContainer = new RobotContainer();
 		m_compressor = new Compressor();
 		Logger.configureLoggingAndConfig(m_robotContainer, false);
@@ -123,6 +125,10 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void teleopPeriodic() {
+		double tx = m_limelight.getEntry("tx").getDouble(0);
+		double ty = m_limelight.getEntry("ty").getDouble(0);
+		SmartDashboard.putNumber("tx", tx);
+		SmartDashboard.putNumber("ty", ty);
 	}
 
 	@Override
